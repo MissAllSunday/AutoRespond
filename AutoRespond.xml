@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Suki:auto_respond</id>
+	<version>1
+	2.0.1</version>
+
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="replace"><![CDATA[if (isset($topicOptions['id']))
+			$topic = $topicOptions['id'];]]></search>
+			<add><![CDATA[		/* AutoRespond mod */
+		if (empty($topic))
+			AutoRespond($msgOptions, $topicOptions, $posterOptions);
+
+		if (isset($topicOptions['id']))
+			$topic = $topicOptions['id'];]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Who.php">
+	<operation>
+			<search position="replace"><![CDATA[		'mods' => array(]]></search>
+			<add><![CDATA[		'mods' => array(
+			AutoRespondWho(),]]></add>
+		</operation>
+	</file>
+
+</modification>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>Suki:auto_respond</id>
+	<name>Auto Respond</name>
+	<version>2.0.1</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+	<readme parsebbc="true">readme.txt</readme>
+	    <code>hooks.php</code>
+		<database>install.php</database>
+		<modification>AutoRespond.xml</modification>
+		<require-file name="AutoRespond.php" destination="$sourcedir">The file that handles everything</require-file>
+		<require-file name="OharaDB.class.php" destination="$sourcedir">A class for handling database stuff</require-file>
+		<require-file name="AutoRespond.template.php" destination="$themedir">template file</require-file>
+		<require-dir name="languages" destination="$themedir">The folder with the translations</require-dir>
+		<redirect url="$scripturl?action=admin;area=autorespond" timeout="4000">redirect.txt</redirect>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+	    <code>remove.php</code>
+		<modification reverse="true">AutoRespond.xml</modification>
+		<remove-file name="$sourcedir/AutoRespond.php" />
+		<remove-file name="$themedir/AutoRespond.template.php" />
+		<remove-file name="$languagedir/AutoRespond.english.php" />
+		<remove-file name="$sourcedir/OharaDB.class.php" />
+	</uninstall>
+
+</package-info>
