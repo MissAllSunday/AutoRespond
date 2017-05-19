@@ -4,7 +4,7 @@ by: [url=http://missallsunday.com]Suki[/url][/center]
 [color=purple][b][size=12pt]License[/size][/b][/color]
 
  * This SMF modification is subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this SMF modification except in compliance with
+ * 2.0 (the "License"); you may not use this SMF modification except in compliance with
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
 
@@ -17,7 +17,7 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 
 [b]for SMF 2.0.x only [/b]
 
-[size=12pt][color=purple]Laguage[/color][/size]
+[size=12pt][color=purple]Language[/color][/size]
 -English
 
 
@@ -25,7 +25,7 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 
 -12/01/12
 	Renamed template names to avoid conflicts with other mods.
-	Added a remove file to manually remove the hooks if necesary.
+	Added a remove file to manually remove the hooks if necessary.
 
 -x/10/11 Version 2.0
 	Added and admin interface for creating multiple messages for multiple boards.

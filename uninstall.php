@@ -20,10 +20,8 @@ $hooks = array(
 	'integrate_admin_areas' => 'AutoRespondAdmin',
 );
 
-$call = 'remove_integration_function';
+	$call = 'remove_integration_function';
 
 
 foreach ($hooks as $hook => $function)
 	$call($hook, $function);
-
-?>

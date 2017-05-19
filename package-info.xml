@@ -8,7 +8,7 @@
 
 	<install for="2.0 - 2.0.99">
 	<readme parsebbc="true">readme.txt</readme>
-	    <code>hooks.php</code>
+		<code>hooks.php</code>
 		<database>install.php</database>
 		<modification>AutoRespond.xml</modification>
 		<require-file name="AutoRespond.php" destination="$sourcedir">The file that handles everything</require-file>
@@ -19,7 +19,7 @@
 	</install>
 
 	<uninstall for="2.0 - 2.0.99">
-	    <code>remove.php</code>
+		<code>remove.php</code>
 		<modification reverse="true">AutoRespond.xml</modification>
 		<remove-file name="$sourcedir/AutoRespond.php" />
 		<remove-file name="$themedir/AutoRespond.template.php" />
