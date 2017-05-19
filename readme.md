@@ -28,6 +28,7 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 - Change license to Mozilla 2.0
 - Remove deprecated constructor
 - Add English utf8 language
+- Update the template
 
 2.0.1 Jan 2012
 - Renamed template names to avoid conflicts with other mods.

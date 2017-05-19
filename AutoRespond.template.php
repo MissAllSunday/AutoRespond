@@ -24,83 +24,65 @@ function template_auto_respond_add()
 		<div class="cat_bar">
 			<h3 class="catbg">',$txt['AR_admin_'.$sa],'</h3>
 		</div>
-		<span class="clear upperframe">
-				<span></span>
-			</span>
-			<div class="ar_table rfix">
-				<div class="innerframe">
-					<table class="ar_form" cellspacing="10">';
+		<div class="windowbg2">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				<dl class="settings">';
 
-					/* Title */
-					echo'<tr>
-							<td>
-								<span id="ar_captation">
-									',$txt['AR_form_title'],'
-								</span>
-							</td>
-							<td>
-								<input type="text" name="title" size="55" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['title'],'" class="input_text" />
-							</td>
-						</tr>';
+	/* Title */
+	echo'
+					<dt>
+						',$txt['AR_form_title'],'
+					</dt>
+					<dd>
+						<input type="text" name="title" size="55" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['title'],'" class="input_text" />
+					</dd>';
 
-					/* User */
-					echo'<tr>
-							<td>
-								<span id="ar_captation">
-									',$txt['AR_form_user'],'
-								</span>
-							</td>
-							<td>
-								<input type="text" name="user_id" size="5" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['user_id'],'" class="input_text" />
-							</td>
-						</tr>';
+	/* User */
+	echo'
+					<dt>
+						',$txt['AR_form_user'],'
+					</dt>
+					<dd>
+						<input type="text" name="user_id" size="5" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['user_id'],'" class="input_text" />
+					</dd>';
 
-						/* Boards */
-					echo'<tr>
-							<td>
-								<span id="ar_captation">
-									',$txt['AR_form_boards'],'
-								</span>
-							</td>
-							<td>
-								<ul class="checklist cl1">';
+	/* Boards */
+	echo'
+					<dt>
+						',$txt['AR_form_boards'],'
+					</dt>
+					<dd>';
 
-							foreach($context['autorespond']['boards'] as $b)
-								echo '
-									<li class="alt">
-										<label for="',$b['id_board'],'"><input id="',$b['id_board'],'" name="board_id[]" value="',$b['id_board'],'" type="checkbox" ',(in_array($b['id_board'],$context['autorespond'][$sa]['board_id']) ? 'checked=yes' : ''),' />',$b['name'],' ID (',$b['id_board'],')</label>
-									</li>';
+	foreach($context['autorespond']['boards'] as $b)
+		echo '
+						<label for="',$b['id_board'],'"><input id="',$b['id_board'],'" name="board_id[]" value="',$b['id_board'],'" type="checkbox" ',(in_array($b['id_board'],$context['autorespond'][$sa]['board_id']) ? 'checked=yes' : ''),' />',$b['name'],' ID (',$b['id_board'],')</label><br />';
 
-							echo'</ul>
-							</td>
-						</tr>';
+	echo'
+					</dd>';
 
-						/* Textarea */
-					echo'<tr>
-							<td>
-								<span id="ar_captation">
-									',$txt['AR_form_body'],'
-								</span>
-								',$txt['AR_form_body_decs'],'
-							</td>
-							<td>
-								<textarea rows="15" cols="70" name="body" id="body">',$context['autorespond'][$sa]['body'],'</textarea>
-							</td>
-						</tr>
-					</table>';
+	/* Textarea */
+	echo'
+					<dt>
+						',$txt['AR_form_body'],'
+						<small>',$txt['AR_form_body_decs'],'</small>
+					</dt>
+					<dd>
+						<textarea rows="15" cols="50" name="body" id="body">',$context['autorespond'][$sa]['body'],'</textarea>
+					</dd>
+				</dl>';
 
 		/* Done with the fields, lets show a submit button */
 		echo '
-			<div id="confirm_buttons">
-				<input type="hidden" id="', $context['session_var'], '" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="hidden" id="arid" name="arid" value="',$context['autorespond'][$sa]['id'],'" />
-				<input type="submit" name="send" class="sbtn" value="',$txt['AR_form_send_'.$sa],'" />
+				<hr class="hrcolor clear" />
+				<div id="confirm_buttons" class="righttext">
+					<input type="hidden" id="', $context['session_var'], '" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+					<input type="hidden" id="arid" name="arid" value="',$context['autorespond'][$sa]['id'],'" />
+					<input type="submit" name="send" class="sbtn" value="',$txt['AR_form_send_'.$sa],'" />
+				</div>
+				<span class="botslice"><span></span></span>
 			</div>
-			</div>
-			</div>
-			<span class="lowerframe">
-				<span></span>
-			</span><br />
+		</div>
 	</form>';
 }
 
