@@ -30,8 +30,8 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 - Add English utf8 language
 
 2.0.1 Jan 2012
-	Renamed template names to avoid conflicts with other mods.
-	Added a remove file to manually remove the hooks if necessary.
+- Renamed template names to avoid conflicts with other mods.
+- Added a remove file to manually remove the hooks if necessary.
 
 2.0 Oct 2011
 - Added and admin interface for creating multiple messages for multiple boards.
