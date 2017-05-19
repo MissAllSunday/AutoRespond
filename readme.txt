@@ -18,23 +18,28 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 [b]for SMF 2.0.x only [/b]
 
 [size=12pt][color=purple]Language[/color][/size]
--English
+-English/utf8
 
 
 [size=12pt][color=purple]ChangeLog[/color][/size]
 
--12/01/12
-	Renamed template names to avoid conflicts with other mods.
-	Added a remove file to manually remove the hooks if necessary.
+2.0.2 May 2017
+- Change license to Mozilla 2.0
+- Remove deprecated constructor
+- Add English utf8 language
 
--x/10/11 Version 2.0
-	Added and admin interface for creating multiple messages for multiple boards.
+2.0.1 Jan 2012
+- Renamed template names to avoid conflicts with other mods.
+- Added a remove file to manually remove the hooks if necessary.
 
--30/08/11 Version 1.0.2
-	Added an option to set a dummy IP
-	Rewrite of language strings
-	Added English utf8
+2.0 Oct 2011
+- Added and admin interface for creating multiple messages for multiple boards.
 
--17/06/11 Version 1.0.1
-	Support for SMF 2.0
-	Added an option to lock the topic along with the auto response.
+1.0.2 Aug 2011
+- Added an option to set a dummy IP
+- Rewrite of language strings
+- Added English utf8
+
+1.0.1 Jun 2011
+- Support for SMF 2.0
+- Added an option to lock the topic along with the auto response.
