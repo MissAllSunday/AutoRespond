@@ -22,7 +22,7 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 
 
 [size=12pt][color=purple]ChangeLog[/color][/size]
-
+[code]
 2.0.2 May 2017
 - Change license to Mozilla 2.0
 - Remove deprecated constructor
@@ -43,3 +43,4 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 1.0.1 Jun 2011
 - Support for SMF 2.0
 - Added an option to lock the topic along with the auto response.
+[/code]

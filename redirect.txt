@@ -1,7 +1,4 @@
-<div style="padding: 10px;">
-	<div style="border-bottom: 1px dashed; padding-bottom: 5px; width: 500px; font-weight: bold; font-size: 130%;">Installation Complete</div>
-	
-	<p>Hope you like the mod</p>
-	<p>You are now been redirected to the mod settings...</p>
+Installation Completed
+Hope you like the mod
 
-</div>
+You are now been redirected to the mod settings...
