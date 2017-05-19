@@ -24,6 +24,7 @@
 		<remove-file name="$sourcedir/AutoRespond.php" />
 		<remove-file name="$themedir/AutoRespond.template.php" />
 		<remove-file name="$languagedir/AutoRespond.english.php" />
+		<remove-file name="$languagedir/AutoRespond.english-utf8.php" />
 		<remove-file name="$sourcedir/OharaDB.class.php" />
 	</uninstall>
 
