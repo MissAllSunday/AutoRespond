@@ -2,7 +2,7 @@
 
 The software is licensed under [MPL 2.0 license](https://www.mozilla.org/MPL/).
 
-######Description:
+###### Description:
 
 This mod allow you to set a custom automatic reply when a new topic is created in a board you specify.
 
@@ -10,18 +10,18 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 - Set if his/her post count will increase.
 - You can create as many custom messages as needed
 
-######Requirements
+###### Requirements
 
 - SMF 2.0.x.
 - PHP 5.3 or greater.
 
 
-######Languages:
+###### Languages:
 
 - English/utf8
 
 
-######Changelog:
+###### Changelog:
 
 ```
 2.0.2 May 2017
