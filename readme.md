@@ -12,8 +12,8 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 
 ###### Requirements
 
-- SMF 2.0.x.
-- PHP 5.3 or greater.
+- SMF 2.1.x.
+- PHP 7.4 or greater.
 
 
 ###### Languages:
