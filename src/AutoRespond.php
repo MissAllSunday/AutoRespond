@@ -1,17 +1,13 @@
 <?php
 
-/**
- * Auto respond mod (SMF)
- *
- * @package AutoRespond
- * @version 2.0.2
- * @author Jessica González <suki@missallsunday.com>
- * @copyright Copyright (c) 2017 Jessica González
- * @license http://www.mozilla.org/MPL/ MPL 2.0
- */
+declare(strict_types=1);
 
-if (!defined('SMF'))
-	die('Hacking attempt...');
+namespace AutoRespond;
+
+class AutoRespond
+{
+
+}
 
 function AutoRespondAdmin(&$admin_areas)
 {
