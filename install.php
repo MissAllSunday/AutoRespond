@@ -19,6 +19,16 @@ elseif (!defined('SMF'))
 
 global $smcFunc, $context, $db_prefix;
 
+function installCheck(): void
+{
+	if (version_compare(\PHP_VERSION, '7.4.0', '<')) {
+		fatal_error('This mod needs PHP 7.4 or greater.
+		 You will not be able to install/use this mod,contact your host and ask for a PHP upgrade.');
+	}
+}
+
+installCheck();
+
 db_extend('packages');
 
 if (!empty($context['uninstalling'])) {
@@ -71,5 +81,11 @@ $table = [
 	'parameters' => [],
 ];
 
-$smcFunc['db_create_table']($db_prefix . $table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
-
+$smcFunc['db_create_table'](
+	$table['table_name'],
+	$table['columns'],
+	$table['indexes'],
+	$table['parameters'],
+	$table['if_exists'],
+	$table['error']
+);

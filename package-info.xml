@@ -8,6 +8,7 @@
 
 	<install for="2.0 - 2.0.99">
 	<readme parsebbc="true">readme.txt</readme>
+
 		<code>hooks.php</code>
 		<database>install.php</database>
 		<modification>AutoRespond.xml</modification>
