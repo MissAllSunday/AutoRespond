@@ -40,14 +40,14 @@
 		<require-dir name="src/AutoRespond" destination="$sourcedir">Source files</require-dir>
 		<hook hook="integrate_admin_include" file="$sourcedir/AutoRespond/AutoRespond.php"  />
 		<hook hook="integrate_admin_areas" function="\AutoRespond\AutoRespond::adminMenu#"  />
-		<hook hook="integrate_create_post" function="$sourcedir/AutoRespond/AutoRespond.php|\AutoRespond\AutoRespond::createRespond#"  />
+		<hook hook="integrate_post2_end" function="$sourcedir/AutoRespond/AutoRespond.php|\AutoRespond\AutoRespond::createRespond#"  />
 		<redirect url="$scripturl?action=admin;area=autorespond" timeout="4000">redirect.txt</redirect>
 	</install>
 
 	<uninstall for="2.0 - 2.0.99">
 		<hook hook="integrate_admin_include" file="$sourcedir/AutoRespond/AutoRespond.php"  reverse="true" />
 		<hook hook="integrate_admin_areas" function="\AutoRespond\AutoRespond::adminMenu#" reverse="true" />
-		<hook hook="integrate_create_post" function="$sourcedir/AutoRespond/AutoRespond.php|\AutoRespond\AutoRespond::createRespond#" reverse="true" />
+		<hook hook="integrate_post2_end" function="$sourcedir/AutoRespond/AutoRespond.php|\AutoRespond\AutoRespond::createRespond#" reverse="true" />
 		<database>install.php</database>
 		<remove-dir name="$sourcedir/AutoRespond" />
 	</uninstall>

@@ -1,11 +1,18 @@
 <?php
 
 namespace AutoRespond;
+use AutoRespond\Controller\AdminController;
 use OharaDBClass;
 
 class AutoRespond
 {
-	function createRespond($msgOptions, $topicOptions, $posterOptions)
+	public function __construct()
+	{
+		loadLanguage('AutoRespond');
+		loadtemplate('AutoRespond');
+	}
+
+	function createRespond()
 	{
 
 		global $modSettings, $sourcedir, $context;
@@ -91,8 +98,23 @@ class AutoRespond
 		createPost($newMsgOptions, $newTopicOptions, $newPosterOptions);
 	}
 
-	public function adminMenu(array $menuData): void
+	public function adminMenu(array &$menuData): void
 	{
+		global $txt, $sourcedir;
 
+		require_once($sourcedir . '/ManageSettings.php');
+
+		$adminController = new AdminController();
+
+		$menuData['config']['areas']['autorespond'] = [
+			'label' => $txt['AR_menu'],
+			'function' => [$adminController, 'dispatch'],
+			'icon' => 'posts.gif',
+			'subsections' => [
+				'settings' => [$txt['AR_basic_settings']],
+				'list' => [$txt['AR_list_page']],
+				'add' => [$txt['AR_admin_add']],
+			],
+		];
 	}
 }
