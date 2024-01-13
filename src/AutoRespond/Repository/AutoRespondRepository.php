@@ -1,5 +1,6 @@
 <?php
 
+namespace AutoRespond\Repository;
 class AutoRespondRepository
 {
 
@@ -8,7 +9,7 @@ class AutoRespondRepository
 
 	}
 
-	public function getById(int $id = 0) : array
+	public function getById(int $id = 0): array
 	{
 		return [];
 	}

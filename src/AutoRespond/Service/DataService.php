@@ -1,5 +1,8 @@
 <?php
 
+namespace AutoRespond\Service;
+use OharaDBClass;
+
 class DataService
 {
 	public function validate()
@@ -9,14 +12,14 @@ class DataService
 		require_once($sourcedir . '/OharaDB.class.php');
 
 		/* Prepare the query */
-		$params = array(
-			'rows' =>'id'
-		);
+		$params = [
+			'rows' => 'id',
+		];
 		$query = new OharaDBClass('autorespond');
 		$query->Params($params);
 		$query->GetData('id');
 
-		$return = array();
+		$return = [];
 
 		if (!empty($query->data_result))
 			$return = $query->data_result;
@@ -33,8 +36,7 @@ class DataService
 		$item = $smcFunc['htmltrim']($item, ENT_QUOTES);
 		$item = censorText($item);
 
-		if ($body)
-		{
+		if ($body) {
 			require_once($sourcedir . '/Subs-Post.php');
 			preparsecode($item);
 		}
