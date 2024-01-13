@@ -90,4 +90,9 @@ class AutoRespond
 		/* Finally! */
 		createPost($newMsgOptions, $newTopicOptions, $newPosterOptions);
 	}
+
+	public function adminMenu(array $menuData): void
+	{
+
+	}
 }
