@@ -1,6 +1,6 @@
 <?php
 
-class AutoRespondData
+class DataService
 {
 	public function validate()
 	{
