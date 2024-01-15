@@ -9,25 +9,7 @@ class AutoRespond
 
 }
 
-function AutoRespondAdmin(&$admin_areas)
-{
-	global $txt, $modSettings, $context;
 
-	loadLanguage('AutoRespond');
-	loadtemplate('AutoRespond');
-
-	$admin_areas['config']['areas']['autorespond'] = array(
-		'label' => $txt['AR_menu'],
-		'file' => 'AutoRespond.php',
-		'function' => 'ModifyAutoRespondSettings',
-		'icon' => 'posts.gif',
-		'subsections' => array(
-			'basic' => array($txt['AR_basic_settings']),
-			'list' => array($txt['AR_list_page']),
-			'add' => array($txt['AR_admin_add']),
-		),
-	);
-}
 
 function ModifyAutoRespondSettings($return_config = false)
 {
@@ -67,82 +49,10 @@ function ModifyAutoRespondSettings($return_config = false)
 	call_user_func($subActions[$_REQUEST['sa']]);
 }
 
-function BasicAutoRespondSettings($return_config = false)
-{
-	global $txt, $scripturl, $context, $sourcedir;
 
-	/* I can has Adminz? */
-	isAllowedTo('admin_forum');
-
-	loadLanguage('AutoRespond');
-	loadtemplate('AutoRespond');
-
-	require_once($sourcedir . '/ManageServer.php');
-
-	$config_vars = array(
-
-		array('check', 'AR_enable', 'subtext' => $txt['AR_enable_sub']),
-		array('check', 'AR_update_post_count', 'subtext' => $txt['AR_update_post_count_sub']),
-		array('check', 'AR_use_title', 'subtext' => $txt['AR_use_title_sub']),
-		array('check', 'AR_lock_topic_after', 'subtext' => $txt['AR_lock_topic_after_sub']),
-		array('check', 'AR_dummy_ip', 'subtext' => $txt['AR_dummy_ip_sub']),
-
-	);
-
-	if ($return_config)
-		return $config_vars;
-
-	$context['post_url'] = $scripturl . '?action=admin;area=autorespond;save';
-	$context['settings_title'] = $txt['AR_admin_panel'];
-	$context['page_title'] = $txt['AR_admin_panel'];
-	$context['sub_template'] = 'show_settings';
-
-	if (isset($_GET['save']))
-	{
-		checkSession();
-		saveDBSettings($config_vars);
-		redirectexit('action=admin;area=autorespond');
-	}
-
-	prepareDBSettingContext($config_vars);
-}
 
 /* This will show a list of all your custom messages */
-function AutoRespondListPage()
-{
-	global $txt, $context, $scripturl, $sourcedir;
 
-	/* I can has Adminz? */
-	isAllowedTo('admin_forum');
-	loadLanguage('AutoRespond');
-	loadtemplate('AutoRespond');
-
-	require_once($sourcedir . '/OharaDB.class.php');
-
-
-	/* Prepare the query */
-	$params = array(
-		'rows' =>'id, board_id, user_id, title, body',
-		'order' => '{raw:sort}',
-	);
-	$data = array(
-		'sort' => 'id',
-	);
-	$query = new OharaDBClass('autorespond');
-	$query->Params($params, $data);
-	$query->GetData('id');
-
-	/* Store the result in context to handle it better */
-	$context['GetARList'] = $query->data_result;
-
-	/* Set some stuff for the page */
-	$context['sub_template'] = 'auto_respond_list';
-	$context['page_title'] = $txt['AR_admin_list'];
-	$context['linktree'][] = array(
-		'url' => $scripturl. '?action=admin;area=autorespond;sa=list',
-		'name' => $txt['AR_admin_list'],
-	);
-}
 
 /* Get the info and show a nice form */
 function AutoRespondEdit()
@@ -262,65 +172,10 @@ function AutoRespondEdit2()
 }
 
 /* ...As you wish */
-function AutoRespondDelete() {
 
-	global $sourcedir;
-
-	/* I can has Adminz? */
-	isAllowedTo('admin_forum');
-
-	require_once($sourcedir . '/OharaDB.class.php');
-
-	$validation = AutoRespondValidate();
-
-	/* Safety first! */
-	if (isset($_REQUEST['arid']) && in_array($_REQUEST['arid'], array_keys($validation)))
-	{
-		$params = array(
-			'where' => 'id = {int:id}'
-		);
-
-		$data = array(
-			'id' => $_REQUEST['arid']
-		);
-		$deletedata = new OharaDBClass('autorespond');
-		$deletedata->Params($params, $data);
-		$deletedata->DeleteData();
-
-		redirectexit('action=admin;area=autorespond;sa=list');
-	}
-}
 
 /* New stuff */
-function AutoRespondAdd()
-{
-	global $txt, $context, $scripturl, $sourcedir;
 
-	/* I can has Adminz? */
-	isAllowedTo('admin_forum');
-	loadLanguage('AutoRespond');
-	loadtemplate('AutoRespond');
-	AutoRespondHeaders();
-
-	$context['sub_template'] = 'auto_respond_add';
-	$context['page_title'] = $txt['AR_admin_adding'];
-	$context['linktree'][] = array(
-		'url' => $scripturl. '?action=admin;area=autorespond;sa=add',
-		'name' => $txt['AR_admin_adding'],
-	);
-
-	/* This are empty...nobody knows why... (rolleyes) */
-	$context['autorespond']['add'] = array(
-		'board_id' => array(),
-		'body' => '',
-		'title' => '',
-		'user_id' => '',
-		'id' => ''
-	);
-
-	/* Load all boards */
-	$context['autorespond']['boards'] = AutoRespondBoards();
-}
 
 /* Please Insert 2 Coins To Play */
 function AutoRespondAdd2()
@@ -369,141 +224,6 @@ function AutoRespondAdd2()
 	redirectexit('action=admin;area=autorespond;sa=list');
 }
 
-/* The main function, this is where all the magic happens */
-function AutoRespond($msgOptions, $topicOptions, $posterOptions){
-
-	global $modSettings, $sourcedir, $context;
-
-	/* Can't do much if the mod is not enable */
-	if (empty($modSettings['AR_enable']))
-		return;
-
-	require_once($sourcedir . '/OharaDB.class.php');
-
-	/* Get the message for this board */
-	$params = array(
-		'rows' =>'id, board_id, user_id, title, body',
-		'where' => 'find_in_set("'.$topicOptions['board'].'",board_id) <> 0'
-	);
-
-	/* Prepare the query */
-	$query = new OharaDBClass('autorespond');
-	$query->Params($params);
-	$query->GetData(null, true);
-
-	/* There's no such thing... */
-	if (empty($query->data_result))
-		return;
-
-	/* We need this... */
-	require_once($sourcedir . '/Subs-Post.php');
-
-	/* We got a message for this board */
-	$context['AR_message'] = array(
-		'id' => $query->data_result['id'],
-		'user_id' => (int) $query->data_result['user_id'],
-		'title' => $query->data_result['title'],
-		'body' => un_preparsecode($query->data_result['body'])
-	);
-
-	/* Add in the default replacements. */
-	$replacements = array(
-		'TOPIC_POSTER' => $posterOptions['name'],
-		'POSTED_TIME' => date("F j, Y, g:i a"),
-		'TOPIC_SUBJECT' => $msgOptions['subject'],
-	);
-
-	/* Split the replacements up into two arrays, for use with str_replace */
-	$find = array();
-	$replace = array();
-
-	foreach ($replacements as $f => $r)
-	{
-		$find[] = '{' . $f . '}';
-		$replace[] = $r;
-	}
-
-	/* Do the variable replacements. */
-	$context['AR_message']['body'] = str_replace($find, $replace, $context['AR_message']['body']);
-
-	$newMsgOptions = array(
-		'id' => 0,
-		'subject' => !empty($modSettings['AR_use_title']) ? $context['AR_message']['title'] : $msgOptions['subject'],
-		'body' => $context['AR_message']['body'],
-		'icon' => 'xx',
-		'smileys_enabled' => 1,
-		'attachments' => array(),
-	);
-
-	$newTopicOptions = array(
-		'id' => $topicOptions['id'],
-		'board' => $topicOptions['board'],
-		'poll' => null,
-		'lock_mode' => !empty($modSettings['AR_lock_topic_after']) ? 1 : null,
-		'sticky_mode' => null,
-		'mark_as_read' => false,
-	);
-
-	$newPosterOptions = array(
-		'id' => !empty($context['AR_message']['user_id']) ? $context['AR_message']['user_id'] : 1,
-		'name' => '',
-		'email' => '',
-		'update_post_count' => !empty($modSettings['AR_update_post_count']) ? 1 : 0,
-		'ip' => !empty($modSettings['AR_dummy_ip']) ? '127.0.0.1' : '',
-	);
-
-	/* Finally! */
-	createPost($newMsgOptions, $newTopicOptions, $newPosterOptions);
-}
-
-/* DUH! WINNING! */
-function AutoRespondWho()
-{
-	$MAS = '<a href="http://missallsunday.com" title="Free SMF Mods">Auto Respond mod &copy Suki</a>';
-
-	return $MAS;
-}
-
-/* An extra query for validation purposes */
-function AutoRespondValidate()
-{
-	global $sourcedir;
-
-	require_once($sourcedir . '/OharaDB.class.php');
-
-	/* Prepare the query */
-	$params = array(
-		'rows' =>'id'
-	);
-	$query = new OharaDBClass('autorespond');
-	$query->Params($params);
-	$query->GetData('id');
-
-	$return = array();
-
-	if (!empty($query->data_result))
-		$return = $query->data_result;
-
-	return $return;
-}
-
-/* Don't wash your dirty laundry in public... */
-function AutoRespondClean($item, $body = false)
-{
-	global $smcFunc, $sourcedir;
-
-	$item = $smcFunc['htmlspecialchars']($item, ENT_QUOTES);
-	$item = $smcFunc['htmltrim']($item, ENT_QUOTES);
-	$item = censorText($item);
-
-	if ($body)
-	{
-		require_once($sourcedir . '/Subs-Post.php');
-		preparsecode($item);
-	}
-
-	return $item;
-}
 
 /* Load all boards */
 function AutoRespondBoards()
