@@ -6,14 +6,20 @@ use OharaDBClass;
 
 class AutoRespond
 {
+	private AutoRespondService $service;
+
 	public function __construct()
 	{
 		loadLanguage('AutoRespond');
 		loadtemplate('AutoRespond');
+
+		// No DI :(
+		$this->service = new AutoRespondService();
 	}
 
 	function createRespond()
 	{
+		global $topicOptions;
 
 		global $modSettings, $sourcedir, $context;
 

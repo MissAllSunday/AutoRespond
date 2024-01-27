@@ -109,7 +109,7 @@ class AutoRespondAdmin
 
 	protected function add()
 	{
-		global $txt, $context, $scripturl, $sourcedir;
+		global $txt, $context, $scripturl;
 
 		$id = !empty($_GET['id']) ? $_GET['id'] : 0;
 		$isEditing = !empty($id);
@@ -127,28 +127,21 @@ class AutoRespondAdmin
 
 	protected function delete()
 	{
-
-		global $sourcedir;
-
-		require_once($sourcedir . '/OharaDB.class.php');
-
-		$validation = AutoRespondValidate();
-
-		/* Safety first! */
-		if (isset($_REQUEST['id']) && in_array($_REQUEST['id'], array_keys($validation)))
-		{
-			$params = array(
-				'where' => 'id = {int:id}'
-			);
-
-			$data = array(
-				'id' => $_REQUEST['arid']
-			);
-			$deletedata = new OharaDBClass('autorespond');
-			$deletedata->Params($params, $data);
-			$deletedata->DeleteData();
-
+		if (empty($_REQUEST['id'])) {
+			// set some error message about it
 			redirectexit('action=admin;area=autorespond;sa=list');
 		}
+
+		$id = $_REQUEST['id'];
+		$entry = $this->service->getEntries([$id])['entries'][$id];
+
+		if (empty($entry)) {
+			// set some error not valid
+			redirectexit('action=admin;area=autorespond;sa=list');
+		}
+
+		$this->service->deleteEntries([$id]);
+
+		redirectexit('action=admin;area=autorespond;sa=list');
 	}
 }

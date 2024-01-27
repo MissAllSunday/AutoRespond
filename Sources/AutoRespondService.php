@@ -13,6 +13,21 @@ class AutoRespondService
 		require_once($sourcedir . '/Subs-Boards.php');
 	}
 
+	public function deleteEntries(array $autoRespondIds = []): void
+	{
+		global $smcFunc;
+
+		if (empty($autoRespondIds)) {
+			return;
+		}
+
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}log_boards
+			WHERE id_board IN ({array_int:autoRespondIds})',
+			['autoRespondIds' => $autoRespondIds]
+		);
+	}
+
 	public function getEntries(array $autoRespondIds = []): array
 	{
 		global $smcFunc;
