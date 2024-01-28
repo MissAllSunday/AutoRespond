@@ -10,59 +10,41 @@ class AutoRespond
 
 	public function __construct()
 	{
+		global $sourcedir;
+
 		loadLanguage('AutoRespond');
 		loadtemplate('AutoRespond');
+
+		require_once($sourcedir . '/Subs-Post.php');
 
 		// No DI :(
 		$this->service = new AutoRespondService();
 	}
 
-	function createRespond()
+	public function createRespond()
 	{
-		global $topicOptions;
+		global $topicOptions, $msgOptions, $posterOptions, $modSettings, $context;
 
-		global $modSettings, $sourcedir, $context;
-
-		/* Can't do much if the mod is not enable */
 		if (empty($modSettings['AR_enable']))
 			return;
 
-		require_once($sourcedir . '/OharaDB.class.php');
+		$entry = $this->service->getEntriesByBoard($topicOptions['board']);
 
-		/* Get the message for this board */
-		$params = [
-			'rows' => 'id, board_id, user_id, title, body',
-			'where' => 'find_in_set("' . $topicOptions['board'] . '",board_id) <> 0',
-		];
-
-		/* Prepare the query */
-		$query = new OharaDBClass('autorespond');
-		$query->Params($params);
-		$query->GetData(null, true);
-
-		/* There's no such thing... */
-		if (empty($query->data_result))
+		if (empty($entry))
 			return;
 
-		/* We need this... */
-		require_once($sourcedir . '/Subs-Post.php');
+		$context['AR_message'] = $entry;
 
-		/* We got a message for this board */
-		$context['AR_message'] = [
-			'id' => $query->data_result['id'],
-			'user_id' => (int)$query->data_result['user_id'],
-			'title' => $query->data_result['title'],
-			'body' => un_preparsecode($query->data_result['body']),
-		];
+		$context['AR_message']['body'] = un_preparsecode($entry['body']);
 
-		/* Add in the default replacements. */
+
 		$replacements = [
 			'TOPIC_POSTER' => $posterOptions['name'],
 			'POSTED_TIME' => date("F j, Y, g:i a"),
 			'TOPIC_SUBJECT' => $msgOptions['subject'],
 		];
 
-		/* Split the replacements up into two arrays, for use with str_replace */
+
 		$find = [];
 		$replace = [];
 
@@ -100,9 +82,8 @@ class AutoRespond
 			'ip' => !empty($modSettings['AR_dummy_ip']) ? '127.0.0.1' : '',
 		];
 
-		/* Finally! */
 		createPost($newMsgOptions, $newTopicOptions, $newPosterOptions);
 	}
-
-
 }
+
+//Oh, wouldn't it be great if I *was* crazy? Then the world would be okay.

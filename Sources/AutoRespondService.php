@@ -49,6 +49,42 @@ class AutoRespondService
 			]
 		);
 
+		return $this->prepareData($smcFunc['db_fetch_all']($request));
+	}
+
+	public function getEntriesByBoard(int $boardId = 0): array
+	{
+		global $smcFunc;
+
+		if (empty($boardId)) {
+			return [];
+		}
+
+		$request = $smcFunc['db_query']('', '
+		SELECT id, board_id, user_id, title, body
+		FROM {db_prefix}autorespond AS c
+		WHERE find_in_set("{int:boardId}",board_id) <> 0
+		ORDER BY {raw:sort}',
+			[
+				'sort' => 'id',
+				'boardId' => $boardId
+			]
+		);
+
+		return $this->prepareData($smcFunc['db_fetch_all']($request));
+	}
+
+	public function getBoards(): array
+	{
+		return getTreeOrder()['boards'];
+	}
+
+	protected function prepareData($request) : array
+	{
+		global $smcFunc;
+
+		$data = ['users', 'entries'];
+
 		foreach ($smcFunc['db_fetch_all']($request) as $row)
 		{
 			$data['entries'][$row['id']] = $row;
@@ -59,11 +95,6 @@ class AutoRespondService
 		$data['users'] = $this->getUsersData($data['users']);
 
 		return $data;
-	}
-
-	public function getBoards(): array
-	{
-		return getTreeOrder()['boards'];
 	}
 
 	protected function getUsersData($usersIds = []) : array
