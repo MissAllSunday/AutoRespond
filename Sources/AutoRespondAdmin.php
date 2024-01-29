@@ -1,25 +1,41 @@
 <?php
 
+use AutoRespond\AutoRespondService;
+
 class AutoRespondAdmin
 {
+	const ACTIONS = [
+		'settings',
+		'listPage',
+		'add',
+		'delete',
+	];
+	private AutoRespondService $service;
+
 	public function __construct()
 	{
+		global $sourcedir;
+
+		require_once($sourcedir . '/ManageServer.php');
+		require_once($sourcedir . '/ManageSettings.php');
+
 		loadLanguage('AutoRespond');
 		loadtemplate('AutoRespond');
+
+		$this->service = new AutoRespondService();
 	}
 
-	public function addAreas(&$admin_areas): void
+	public function adminMenu(array &$menuData): void
 	{
 		global $txt;
 
-		$admin_areas['config']['areas']['autorespond'] = [
+		$menuData['config']['areas']['autorespond'] = [
 			'label' => $txt['AR_menu'],
-			'file' => 'AutoRespond.php',
-			'function' => 'ModifyAutoRespondSettings',
+			'function' => [$this, 'addSettings'],
 			'icon' => 'posts.gif',
 			'subsections' => [
-				'basic' => [$txt['AR_basic_settings']],
-				'list' => [$txt['AR_list_page']],
+				'settings' => [$txt['AR_basic_settings']],
+				'listPage' => [$txt['AR_list_page']],
 				'add' => [$txt['AR_admin_add']],
 			],
 		];
@@ -27,45 +43,34 @@ class AutoRespondAdmin
 
 	function addSettings($return_config = false)
 	{
-		global $txt, $scripturl, $context, $sourcedir;
+		global $txt, $context, $sourcedir;
 
 		isAllowedTo('admin_forum');
 
-		require_once($sourcedir . '/ManageSettings.php');
-
 		$context['page_title'] = $txt['AR_admin_panel'];
 
-		$subActions = [
-			'basic' => 'BasicAutoRespondSettings',
-			'list' => 'AutoRespondListPage',
-			'add' => 'AutoRespondAdd',
-			'delete' => 'AutoRespondDelete'
-		];
-
-		loadGeneralSettingParameters($subActions, 'basic');
+		$context['sub_template'] = 'show_settings';
 
 		// Load up all the tabs...
 		$context[$context['admin_menu_name']]['tab_data'] = [
 			'title' => $txt['AR_admin_panel'],
 			'description' => $txt['AR_admin_panel_desc'],
 			'tabs' => [
-				'basic' => []
+				'settings' => []
 			],
 		];
 
-		call_user_func($subActions[$_REQUEST['sa']]);
+		if (!empty(self::ACTIONS[$_REQUEST['sa']])) {
+			$this->{self::ACTIONS[$_REQUEST['sa']]}();
+		}
+
 	}
 
 	function settings($return_config = false): void
 	{
 		global $txt, $scripturl, $context, $sourcedir;
 
-		isAllowedTo('admin_forum');
-
-		require_once($sourcedir . '/ManageServer.php');
-
 		$config_vars = [
-
 			['check', 'AR_enable', 'subtext' => $txt['AR_enable_sub']],
 			['check', 'AR_update_post_count', 'subtext' => $txt['AR_update_post_count_sub']],
 			['check', 'AR_use_title', 'subtext' => $txt['AR_use_title_sub']],
@@ -89,91 +94,54 @@ class AutoRespondAdmin
 		prepareDBSettingContext($config_vars);
 	}
 
-	function AutoRespondListPage()
+	function listPage()
 	{
-		global $txt, $context, $scripturl, $sourcedir;
+		global $txt, $context, $scripturl;
 
-		/* I can has Adminz? */
-		isAllowedTo('admin_forum');
-		loadLanguage('AutoRespond');
-		loadtemplate('AutoRespond');
-
-		require_once($sourcedir . '/OharaDB.class.php');
-
-
-		/* Prepare the query */
-		$params = array(
-			'rows' =>'id, board_id, user_id, title, body',
-			'order' => '{raw:sort}',
-		);
-		$data = array(
-			'sort' => 'id',
-		);
-		$query = new OharaDBClass('autorespond');
-		$query->Params($params, $data);
-		$query->GetData('id');
-
-		/* Store the result in context to handle it better */
-		$context['GetARList'] = $query->data_result;
-
-		/* Set some stuff for the page */
+		$context['GetARList'] = $this->service->getEntries();
 		$context['sub_template'] = 'auto_respond_list';
 		$context['page_title'] = $txt['AR_admin_list'];
 		$context['linktree'][] = array(
-			'url' => $scripturl. '?action=admin;area=autorespond;sa=list',
+			'url' => $scripturl. '?action=admin;area=autorespond;sa=listPage',
 			'name' => $txt['AR_admin_list'],
 		);
 	}
 
 	protected function add()
 	{
-		global $txt, $context, $scripturl, $sourcedir;
+		global $txt, $context, $scripturl;
 
-		AutoRespondHeaders();
+		$id = !empty($_GET['id']) ? $_GET['id'] : 0;
+		$isEditing = !empty($id);
 
 		$context['sub_template'] = 'auto_respond_add';
 		$context['page_title'] = $txt['AR_admin_adding'];
 		$context['linktree'][] = array(
-			'url' => $scripturl. '?action=admin;area=autorespond;sa=add',
+			'url' => $scripturl. '?action=admin;area=autorespond;sa=add' . ($isEditing ? (';id=' . $id) : ''),
 			'name' => $txt['AR_admin_adding'],
 		);
 
-		/* This are empty...nobody knows why... (rolleyes) */
-		$context['autorespond']['add'] = array(
-			'board_id' => array(),
-			'body' => '',
-			'title' => '',
-			'user_id' => '',
-			'id' => ''
-		);
-
-		/* Load all boards */
-		$context['autorespond']['boards'] = AutoRespondBoards();
+		$context['autorespond']['add'] = $isEditing ? $this->service->getEntries()['entries'][$id] : [];
+		$context['autorespond']['boards'] = $this->service->getBoards();
 	}
 
-	protected function delete() {
-
-		global $sourcedir;
-
-		require_once($sourcedir . '/OharaDB.class.php');
-
-		$validation = AutoRespondValidate();
-
-		/* Safety first! */
-		if (isset($_REQUEST['arid']) && in_array($_REQUEST['arid'], array_keys($validation)))
-		{
-			$params = array(
-				'where' => 'id = {int:id}'
-			);
-
-			$data = array(
-				'id' => $_REQUEST['arid']
-			);
-			$deletedata = new OharaDBClass('autorespond');
-			$deletedata->Params($params, $data);
-			$deletedata->DeleteData();
-
+	protected function delete()
+	{
+		if (empty($_REQUEST['id'])) {
+			// set some error message about it
 			redirectexit('action=admin;area=autorespond;sa=list');
 		}
+
+		$id = $_REQUEST['id'];
+		$entry = $this->service->getEntries([$id])['entries'][$id];
+
+		if (empty($entry)) {
+			// set some error not valid
+			redirectexit('action=admin;area=autorespond;sa=list');
+		}
+
+		$this->service->deleteEntries([$id]);
+
+		redirectexit('action=admin;area=autorespond;sa=list');
 	}
 }
