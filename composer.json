@@ -2,15 +2,7 @@
     "name": "suki/auto-respond",
     "description": "SMF modification for creating automatic responses",
     "type": "smf-module",
-    "require": {
-        "phpunit/phpunit": "^10"
-    },
     "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Suki\\AutoRespond\\": "src/"
-        }
-    },
     "authors": [
         {
             "name": "Michel Mendiola",

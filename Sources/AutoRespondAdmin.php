@@ -43,7 +43,7 @@ class AutoRespondAdmin
 
 	function addSettings($return_config = false)
 	{
-		global $txt, $context, $sourcedir;
+		global $txt, $context;
 
 		isAllowedTo('admin_forum');
 
@@ -68,7 +68,7 @@ class AutoRespondAdmin
 
 	function settings($return_config = false): void
 	{
-		global $txt, $scripturl, $context, $sourcedir;
+		global $txt, $scripturl, $context;
 
 		$config_vars = [
 			['check', 'AR_enable', 'subtext' => $txt['AR_enable_sub']],
