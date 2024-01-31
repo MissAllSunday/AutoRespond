@@ -119,6 +119,11 @@ class AutoRespondAdmin
         $data = [];
         $url = $scripturl. '?action=admin;area=autorespond;sa=add';
         $buttonText = $txt['AR_form_send_add'];
+        $context['autorespond']['data'] = [
+            'title' => '',
+            'body' => '',
+            'user_id' => '',
+        ];
 
         $editorOptions = [
             'id' => 'autorespond',
@@ -141,6 +146,7 @@ class AutoRespondAdmin
             $editorOptions['labels']['post_button'] = $buttonText;
         }
 
+        $context['post_box_name'] = $editorOptions['id'];
 		$context['sub_template'] = 'auto_respond_add';
 		$context['page_title'] = $pageTitle;
 		$context['linktree'][] = [
