@@ -109,20 +109,52 @@ class AutoRespondAdmin
 
 	protected function add()
 	{
-		global $txt, $context, $scripturl;
+		global $txt, $context, $scripturl, $sourcedir;
+
+        require_once($sourcedir . '/Subs-Editor.php');
 
 		$id = !empty($_GET['id']) ? $_GET['id'] : 0;
 		$isEditing = !empty($id);
+        $pageTitle = $txt['AR_admin_add'];
+        $data = [];
+        $url = $scripturl. '?action=admin;area=autorespond;sa=add';
+        $buttonText = $txt['AR_form_send_add'];
+
+        $editorOptions = [
+            'id' => 'autorespond',
+            'value' => '',
+            'height' => '175px',
+            'width' => '100%',
+            'labels' => [
+                'post_button' => $buttonText,
+            ],
+            'preview_type' => 2,
+            'required' => true,
+        ];
+
+        if ($isEditing) {
+            $data = $this->service->getEntries()['entries'][$id];
+            $pageTitle = sprintf($txt['AR_admin_edit'], $data['title']);
+            $url = $url . ';id=' . $id;
+            $buttonText = $txt['AR_form_send_edit'];
+            $editorOptions['value'] = $data['body'];
+            $editorOptions['labels']['post_button'] = $buttonText;
+        }
 
 		$context['sub_template'] = 'auto_respond_add';
-		$context['page_title'] = $txt['AR_admin_adding'];
-		$context['linktree'][] = array(
-			'url' => $scripturl. '?action=admin;area=autorespond;sa=add' . ($isEditing ? (';id=' . $id) : ''),
-			'name' => $txt['AR_admin_adding'],
-		);
+		$context['page_title'] = $pageTitle;
+		$context['linktree'][] = [
+			'url' => $url,
+			'name' => $pageTitle,
+        ];
 
-		$context['autorespond']['add'] = $isEditing ? $this->service->getEntries()['entries'][$id] : [];
-		$context['autorespond']['boards'] = $this->service->getBoards();
+        $context['autorespond'] = [
+            'url' => $url,
+            'data' => $data,
+            'boards' => $this->service->getBoards()
+        ];
+
+        create_control_richedit($editorOptions);
 	}
 
 	protected function delete()

@@ -16,13 +16,14 @@ function template_auto_respond_add()
 {
 	global $context, $scripturl, $txt;
 
-	$sa = isset($_REQUEST['sa']) ? $_REQUEST['sa'] : 'add';
+    $id = $_REQUEST['id'] ?? 0;
+	$isEditing = !empty($id);
 
 	/* The nice form, actually this is just an ugly table */
 	echo '
-	<form action="', $scripturl, '?action=admin;area=autorespond;sa=',$sa,'2','" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);smc_saveEntities(\'postmodify\', [\'title\', \'body\']);" >
+	<form action="', $context['autorespond']['url'] ,'" method="post" target="_self">
 		<div class="cat_bar">
-			<h3 class="catbg">',$txt['AR_admin_'.$sa],'</h3>
+			<h3 class="catbg">', $context['page_title'], '</h3>
 		</div>
 		<div class="windowbg2">
 			<span class="topslice"><span></span></span>
@@ -35,7 +36,7 @@ function template_auto_respond_add()
 						',$txt['AR_form_title'],'
 					</dt>
 					<dd>
-						<input type="text" name="title" size="55" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['title'],'" class="input_text" />
+						<input type="text" name="title" size="55" tabindex="1" maxlength="255" value="',$context['autorespond']['title'],'" class="input_text" />
 					</dd>';
 
 	/* User */
@@ -44,7 +45,7 @@ function template_auto_respond_add()
 						',$txt['AR_form_user'],'
 					</dt>
 					<dd>
-						<input type="text" name="user_id" size="5" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['user_id'],'" class="input_text" />
+						<input type="text" name="user_id" size="5" tabindex="1" maxlength="255" value="',$context['autorespond']['user_id'],'" class="input_text" />
 					</dd>';
 
 	/* Boards */
@@ -54,9 +55,10 @@ function template_auto_respond_add()
 					</dt>
 					<dd>';
 
-	foreach($context['autorespond']['boards'] as $b)
+	foreach($context['autorespond']['boards'] as $board)
 		echo '
-						<label for="',$b['id_board'],'"><input id="',$b['id_board'],'" name="board_id[]" value="',$b['id_board'],'" type="checkbox" ',(in_array($b['id_board'],$context['autorespond'][$sa]['board_id']) ? 'checked=yes' : ''),' />',$b['name'],' ID (',$b['id_board'],')</label><br />';
+						<label for="',$board['id_board'],'">
+						    <input id="',$board['id_board'],'" name="board_id[]" value="',$board['id_board'],'" type="checkbox" ',(in_array($board['id_board'],$context['autorespond']['board_id']) ? 'checked=yes' : ''),' />',$b['name'],' ID (',$b['id_board'],')</label><br />';
 
 	echo'
 					</dd>';
@@ -68,7 +70,7 @@ function template_auto_respond_add()
 						<small>',$txt['AR_form_body_decs'],'</small>
 					</dt>
 					<dd>
-						<textarea rows="15" cols="50" name="body" id="body">',$context['autorespond'][$sa]['body'],'</textarea>
+						', template_control_richedit($context['post_box_name'], 'smileyBox_message') ,'
 					</dd>
 				</dl>';
 
