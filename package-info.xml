@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Suki:auto_respond</id>
 	<name>Auto Respond</name>
-	<version>2.0.2</version>
+	<version>2.1</version>
 	<type>modification</type>
 
 	<install for="2.1 - 2.1.99">
@@ -44,7 +44,7 @@
 		<redirect url="$scripturl?action=admin;area=autorespond" timeout="4000">redirect.txt</redirect>
 	</install>
 
-	<uninstall for="2.0 - 2.0.99">
+	<uninstall for="2.1 - 2.1.99">
 		<hook hook="integrate_admin_include" file="$sourcedir/AutoRespond/AutoRespond.php"  reverse="true" />
 		<hook hook="integrate_admin_areas" function="\AutoRespond\AutoRespond::adminMenu#" reverse="true" />
 		<hook hook="integrate_post2_end" function="$sourcedir/AutoRespond/AutoRespond.php|\AutoRespond\AutoRespond::createRespond#" reverse="true" />

@@ -4,12 +4,11 @@
  * Auto respond mod (SMF)
  *
  * @package AutoRespond
- * @version 2.0.2
- * @author Jessica González <suki@missallsunday.com>
- * @copyright Copyright (c) 2017 Jessica González
- * @license http://www.mozilla.org/MPL/ MPL 2.0
+ * @version 2.1
+ * @author Michel Mendiola <suki@missallsunday.com>
+ * @copyright Copyright (c) 2024  Michel Mendiola
+ * @license https://opensource.org/license/mit/
  */
-
 
 function template_auto_respond_add()
 {

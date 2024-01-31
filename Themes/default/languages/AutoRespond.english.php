@@ -4,10 +4,10 @@
  * Auto respond mod (SMF)
  *
  * @package AutoRespond
- * @version 2.0.2
+ * @version 2.1
  * @author Jessica González <suki@missallsunday.com>
- * @copyright Copyright (c) 2017 Jessica González
- * @license http://www.mozilla.org/MPL/ MPL 2.0
+ * @copyright Copyright (c) 2024  Michel Mendiola
+ * @license https://opensource.org/license/mit/
  */
 
 global $txt, $scripturl;
@@ -23,7 +23,6 @@ $txt['AR_admin_panel_desc'] = 'This is the admin panel for the Auto Respond mod,
 -User ID: the user who will post this message.';
 $txt['AR_admin_list'] = 'Auto Respond message list';
 $txt['AR_admin_edit'] = 'Editing: %s';
-$txt['AR_admin_delete'] = 'Deleting: %s';
 $txt['AR_admin_edit'] = 'Edit this message:';
 $txt['AR_form_title'] = 'The message\'s title: (max size allowed: 255)';
 $txt['AR_form_body'] = 'The message\'s content:';
