@@ -1,13 +1,6 @@
 [center][size=14pt][color=purple]Auto Respond mod[/color][/size]
 by: [url=http://missallsunday.com]Suki[/url][/center]
 
-[color=purple][b][size=12pt]License[/size][/b][/color]
-
- * This SMF modification is subject to the Mozilla Public License Version
- * 2.0 (the "License"); you may not use this SMF modification except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
-
 [size=12pt][color=purple]Description[/color][/size]
 
 This mod allow you to set a custom automatic reply when a new topic is created in a board you specify.
@@ -15,7 +8,7 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 -set if his/her post count will increase.
 -You can create as many custom messages as needed
 
-[b]for SMF 2.0.x only [/b]
+[b]for SMF 2.1.x only [/b]
 
 [size=12pt][color=purple]Language[/color][/size]
 -English/utf8

@@ -38,8 +38,8 @@ $table = [
         ],
         [
             'name' => 'board_id',
-            'type' => 'int',
-            'size' => 5,
+            'type' => 'varchar',
+            'size' => 255,
             'default' => '',
         ],
         [
@@ -58,13 +58,13 @@ $table = [
             'name' => 'body',
             'type' => 'text',
             'size' => '',
-            'default' => '',
+            'default' => null,
         ],
     ],
     'indexes' => [
         [
             'type' => 'primary',
-            'columns' => ['id', 'board_id']
+            'columns' => ['id']
         ],
     ],
     'if_exists' => 'ignore',

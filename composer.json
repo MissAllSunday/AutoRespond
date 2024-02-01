@@ -9,5 +9,10 @@
             "email": "suki@missallsunday.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "AutoRespond\\": "Sources/AutoRespond/"
+        }
+    },
     "minimum-stability": "dev"
 }

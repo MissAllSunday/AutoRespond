@@ -14,6 +14,8 @@ declare(strict_types = 1);
 
 namespace AutoRespond;
 
+use AutoRespond\AutoRespondService;
+
 class AutoRespond
 {
 	private AutoRespondService $service;
