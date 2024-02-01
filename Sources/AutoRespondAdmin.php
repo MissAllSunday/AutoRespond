@@ -37,7 +37,7 @@ class AutoRespondAdmin
 		$this->service = new AutoRespondService();
 	}
 
-	public function adminMenu(array &$menuData): void
+	public function menu(array &$menuData): void
 	{
 		global $txt;
 

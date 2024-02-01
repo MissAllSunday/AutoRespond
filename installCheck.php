@@ -9,13 +9,3 @@ function installCheck(): void
 }
 
 installCheck();
-
-$hooks = array(
-	'integrate_pre_include' => '$sourcedir/AutoRespond.php',
-	'integrate_admin_areas' => 'AutoRespondAdmin',
-);
-
-$call = 'add_integration_function';
-
-foreach ($hooks as $hook => $function)
-	$call($hook, $function);
