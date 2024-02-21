@@ -4,70 +4,79 @@
  * Auto respond mod (SMF)
  *
  * @package AutoRespond
- * @version 2.0.2
+ * @version 2.1
  * @author Jessica González <suki@missallsunday.com>
- * @copyright Copyright (c) 2017 Jessica González
- * @license http://www.mozilla.org/MPL/ MPL 2.0
+ * @copyright Copyright (c) 2024  Michel Mendiola
+ * @license https://opensource.org/license/mit/
  */
 
 
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
-	require_once(dirname(__FILE__) . '/SSI.php');
+    require_once(dirname(__FILE__) . '/SSI.php');
 
 elseif (!defined('SMF'))
-	exit('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
+    exit('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
 
 global $smcFunc, $context, $db_prefix;
 
+
 db_extend('packages');
 
-if (empty($context['uninstalling'])){
-
-	$table = array(
-		'table_name' => 'autorespond',
-		'columns' => array(
-			array(
-				'name' => 'id',
-				'type' => 'int',
-				'size' => 5,
-				'null' => false,
-				'auto' => true
-			),
-			array(
-				'name' => 'board_id',
-				'type' => 'varchar',
-				'size' => 255,
-				'default' => '',
-			),
-			array(
-				'name' => 'user_id',
-				'type' => 'int',
-				'size' => 5,
-				'null' => false,
-			),
-			array(
-				'name' => 'title',
-				'type' => 'varchar',
-				'size' => 255,
-				'default' => '',
-			),
-			array(
-				'name' => 'body',
-				'type' => 'text',
-				'size' => '',
-				'default' => '',
-			),
-		),
-		'indexes' => array(
-			array(
-				'type' => 'primary',
-				'columns' => array('id')
-			),
-		),
-		'if_exists' => 'ignore',
-		'error' => 'fatal',
-		'parameters' => array(),
-	);
-
-	$smcFunc['db_create_table']($db_prefix . $table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
+if (!empty($context['uninstalling'])) {
+    return;
 }
+
+$table = [
+    'table_name' => 'autorespond',
+    'columns' => [
+        [
+            'name' => 'id',
+            'type' => 'int',
+            'size' => 5,
+            'null' => false,
+            'auto' => true
+        ],
+        [
+            'name' => 'board_id',
+            'type' => 'varchar',
+            'size' => 255,
+            'default' => '',
+        ],
+        [
+            'name' => 'user_id',
+            'type' => 'int',
+            'size' => 5,
+            'null' => false,
+        ],
+        [
+            'name' => 'title',
+            'type' => 'varchar',
+            'size' => 255,
+            'default' => '',
+        ],
+        [
+            'name' => 'body',
+            'type' => 'text',
+            'size' => '',
+            'default' => null,
+        ],
+    ],
+    'indexes' => [
+        [
+            'type' => 'primary',
+            'columns' => ['id']
+        ],
+    ],
+    'if_exists' => 'ignore',
+    'error' => 'fatal',
+    'parameters' => [],
+];
+
+$smcFunc['db_create_table'](
+    $table['table_name'],
+    $table['columns'],
+    $table['indexes'],
+    $table['parameters'],
+    $table['if_exists'],
+    $table['error']
+);
