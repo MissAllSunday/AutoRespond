@@ -38,13 +38,11 @@
 		<database>install.php</database>
 		<require-dir name="Themes" destination="$boarddir">Theme files</require-dir>
 		<require-dir name="Sources/AutoRespond" destination="$sourcedir">Source files</require-dir>
-		<hook hook="integrate_admin_include" file="$sourcedir/AutoRespond/AutoRespond.php"  />
-		<hook hook="integrate_admin_areas" function="AutoRespondAdmin"  />
+		<hook hook="integrate_admin_areas" function="$sourcedir/AutoRespond/AutoRespondAdmin.php|\AutoRespond\AutoRespondAdmin::menu#"  />
 		<hook hook="integrate_post2_end" function="$sourcedir/AutoRespond/AutoRespond.php|AutoRespond"  />
 		<redirect url="$scripturl?action=admin;area=autorespond" timeout="4000">redirect.txt</redirect>
 	</install>
 	<uninstall for="2.1 - 2.1.99">
-		<hook hook="integrate_admin_include" file="$sourcedir/AutoRespond/AutoRespond.php" reverse="true" />
 		<hook hook="integrate_admin_areas" function="AutoRespondAdmin" reverse="true" />
 		<hook hook="integrate_post2_end" function="$sourcedir/AutoRespond/AutoRespond.php|AutoRespond" reverse="true" />
 		<database>install.php</database>
