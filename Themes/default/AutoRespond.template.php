@@ -12,7 +12,7 @@
 
 function template_ar_show_add()
 {
-	global $context, $scripturl, $txt;
+    global $context, $scripturl, $txt;
 
     $action = $context['data']['id'] ? 'edit' : 'add';
     $id = $context['data']['id'] ? (';id='. $context['data']['id']) : '';
@@ -89,7 +89,7 @@ function template_ar_show_add()
 
 function template_ar_show_list()
 {
-	global $context, $txt, $scripturl;
+    global $context, $txt, $scripturl;
 
     $session = ';'. $context['session_var'] .'='. $context['session_id'];
 
@@ -99,12 +99,12 @@ function template_ar_show_list()
         unset($_SESSION['autorespond']);
     }
 
-	if (empty($context['data']['entries'])) {
+    if (empty($context['data']['entries'])) {
         echo '
             <div class="noticebox">' . $txt['AR_empty_message_list'] . '</div>';
     } else
-	{
-		echo '
+    {
+        echo '
 		<table class="table_grid">
 			<thead>
 				<tr class="title_bar">
@@ -119,8 +119,8 @@ function template_ar_show_list()
 			<tbody>';
 
         /* AutoRespondEntity $entry */
-		foreach($context['data']['entries'] as $id => $entry)
-			echo '
+        foreach($context['data']['entries'] as $id => $entry)
+            echo '
 					<tr class="windowbg" style="text-align: center">
 						<td class="windowbg2">
 						'. $id .'
@@ -142,11 +142,11 @@ function template_ar_show_list()
 						</td>
 					</tr>';
 
-		echo '</tbody>
+        echo '</tbody>
 		</table><br />';
-	}
+    }
 
-	echo '
+    echo '
 		<div id="confirm_buttons">
 			<a class="button" href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=add'. $session .'">'. $txt['AR_admin_add']  .'</a>
 		</div>';
