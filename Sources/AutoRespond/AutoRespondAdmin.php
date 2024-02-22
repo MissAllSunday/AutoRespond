@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace AutoRespond;
 
+use AutoRespond\AutoRespondService as AutoRespondService;
+
 class AutoRespondAdmin
 {
     const ACTIONS = [
@@ -23,6 +25,17 @@ class AutoRespondAdmin
         'delete',
     ];
     const URL = 'action=admin;area=autorespond';
+    private AutoRespondService $service;
+
+    public function __construct()
+    {
+        global $sourcedir;
+
+        // No DI :(
+        require_once($sourcedir . '/AutoRespond/AutoRespondService.php');
+
+        $this->service = new AutoRespondService();
+    }
 
     public function menu(&$admin_areas): void
     {
@@ -46,25 +59,24 @@ class AutoRespondAdmin
     {
         global $txt, $context;
 
-        $context['page_title'] = $txt['AR_admin_panel'];
         $context[$context['admin_menu_name']]['tab_data'] = [
             'title' => $txt['AR_admin_panel'],
             'description' => $txt['AR_admin_panel_desc'],
             'tabs' => [
-                'settings' => []
+                self::ACTIONS[0] => []
             ],
         ];
-        $context['sub_template'] = 'show_settings';
+
         $action = isset($_REQUEST['sa']) && array_search($_REQUEST['sa'], self::ACTIONS) ?
             $_REQUEST['sa'] : self::ACTIONS[0];
-        $context['sub_action'] = $action;
 
+        $this->setContext($action);
         $this->{$action}();
     }
 
     public function settings(): void
     {
-        global $txt, $scripturl, $context;
+        global $txt;
 
         $config_vars = [
             ['check', 'AR_enable', 'subtext' => $txt['AR_enable_sub']],
@@ -73,11 +85,6 @@ class AutoRespondAdmin
             ['check', 'AR_lock_topic_after', 'subtext' => $txt['AR_lock_topic_after_sub']],
             ['check', 'AR_dummy_ip', 'subtext' => $txt['AR_dummy_ip_sub']],
         ];
-
-        $context['post_url'] = $scripturl . '?' . self::URL .';save';
-        $context['settings_title'] = $txt['AR_admin_panel'];
-        $context['page_title'] = $txt['AR_admin_panel'];
-        $context['sub_template'] = 'show_settings';
 
         if (isset($_GET['save']))
         {
@@ -93,8 +100,7 @@ class AutoRespondAdmin
     {
         global $txt, $context, $scripturl, $sourcedir;
 
-        // todo: get all entries
-        $context['GetARList'] = [];
+        $context['entries'] = $this->service->getEntries();
         $context['sub_template'] = 'auto_respond_list';
         $context['page_title'] = $txt['AR_admin_list'];
         $context['linktree'][] = [
@@ -138,6 +144,21 @@ class AutoRespondAdmin
 
         /* Load all boards */
         $context['autorespond']['boards'] = [];
+    }
+
+    protected function setContext(string $action): void
+    {
+        global $context, $scripturl, $txt;
+
+        $context['sub_action'] = $action;
+        $context['sub_template'] = 'show_' . $action;
+        $context['page_title'] = $txt['AR_admin_' . $action];
+        $context['linktree'][] = [
+            'url' => $scripturl. '?' . self::URL . ';sa=' . $action,
+            'name' => $txt['AR_admin_' . $action],
+        ];
+        $context['post_url'] = $scripturl . '?' . self::URL .';save';
+        $context['settings_title'] = $context['page_title'];
     }
 
     protected function loadRequiredFiles(): void
