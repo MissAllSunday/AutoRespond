@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
-* Auto respond mod (SMF)
-*
-* @package AutoRespond
-* @version 2.1
-* @author Michel Mendiola <suki@missallsunday.com>
-* @copyright Copyright (c) 2024  Michel Mendiola
-* @license https://opensource.org/license/mit/
-*/
+ * Auto respond mod (SMF)
+ *
+ * @package AutoRespond
+ * @version 2.1
+ * @author Michel Mendiola <suki@missallsunday.com>
+ * @copyright Copyright (c) 2024  Michel Mendiola
+ * @license https://opensource.org/license/mit/
+ */
 
 namespace AutoRespond;
 
@@ -18,14 +18,14 @@ use AutoRespond\AutoRespondService as AutoRespondService;
 
 class AutoRespondAdmin
 {
-    const ACTIONS = [
+    public const ACTIONS = [
         'settings',
         'list',
         'add',
         'delete',
     ];
-    const URL = 'action=admin;area=autorespond';
-    const NOT_EMPTY_VALUES = [
+    public const URL = 'action=admin;area=autorespond';
+    public const NOT_EMPTY_VALUES = [
         'body',
         'board_id'
     ];
@@ -118,7 +118,7 @@ class AutoRespondAdmin
             $message = 'AR_form_success_delete';
         }
 
-       $this->redirect($message);
+        $this->redirect($message);
     }
 
     public function add(): void
