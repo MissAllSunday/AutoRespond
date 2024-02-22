@@ -12,22 +12,26 @@
 
 global $txt, $scripturl;
 
-$txt['AR_admin_settings'] = 'Auto Respond Settings';
-$txt['AR_list_page'] = 'Message\'s list';
-$txt['AR_admin_add'] = 'Add a new message';
-$txt['AR_menu'] = 'Auto Respond';
-$txt['AR_admin_panel'] = 'Auto Repond admin panel';
+// Admin
+$txt['AR_menu'] = 'Auto Respond mod';
+$txt['AR_admin_panel'] = 'Auto Respond admin panel';
 $txt['AR_admin_panel_desc'] = 'This is the admin panel for the Auto Respond mod, from here you can add/delete/edit your custom messages.<br />Some descriptions:<br />
 -Message: It\'s a small preview of your full message.<br />
 -Board ID: a comma separate list of the boards where this message will appear as a response.<br/>
 -User ID: the user who will post this message.';
-$txt['AR_admin_list'] = 'Auto Respond message list';
-$txt['AR_admin_editing'] = 'Editing: %s';
-$txt['AR_admin_deleting'] = 'Deleting: %s';
+
+$txt['AR_admin_settings'] = 'Settings';
+$txt['AR_admin_add'] = 'Add a new message';
+$txt['AR_admin_list'] = 'Message list';
+$txt['AR_admin_edit'] = 'Editing: %s';
+$txt['AR_admin_delete'] = 'Deleting: %s';
 $txt['AR_admin_edit'] = 'Edit this message:';
+
+
+//Form
 $txt['AR_form_title'] = 'The message\'s title: (max size allowed: 255)';
 $txt['AR_form_body'] = 'The message\'s content:';
-$txt['AR_form_body_decs'] = '<br />You can use BBC as well as the following variables:<br />
+$txt['AR_form_body_desc'] = '<br />You can use BBC as well as the following variables:<br />
 - {TOPIC_POSTER} The topic\'s poster name.<br />
 - {POSTED_TIME} Formatted time.<br />
 - {TOPIC_SUBJECT} The topic subject.';
@@ -58,4 +62,4 @@ $txt['AR_manage_desc'] = 'Here\'s a list of all your custom messages, from here 
 /* Error strings */
 $txt['AR_no_message'] = 'The message does not exist.';
 $txt['AR_empty_value'] = 'You need to fill out all the items in the form';
-$txt['AR_empty_message_list'] = 'There are no messages yet, <a href="'.$scripturl. '?action=admin;area=autorespond;sa=add">Create one</a>';
+$txt['AR_empty_message_list'] = 'There are no messages yet';

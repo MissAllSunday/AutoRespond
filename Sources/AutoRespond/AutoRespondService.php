@@ -85,7 +85,13 @@ class AutoRespondService
 
     public function getBoards(): array
     {
-        return getTreeOrder()['boards'];
+        global $sourcedir, $boards;
+
+        require_once($sourcedir . '/Subs-Boards.php');
+
+        getBoardTree();
+
+        return $boards;
     }
 
     protected function prepareData($request) : array

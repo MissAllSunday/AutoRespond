@@ -48,8 +48,8 @@ class AutoRespondAdmin
             'function' => [$this, 'main'],
             'icon' => 'posts.gif',
             'subsections' => [
-                'settings' => [$txt['AR_basic_settings']],
-                'list' => [$txt['AR_list_page']],
+                'settings' => [$txt['AR_admin_settings']],
+                'list' => [$txt['AR_admin_list']],
                 'add' => [$txt['AR_admin_add']],
             ],
         ];
@@ -100,13 +100,7 @@ class AutoRespondAdmin
     {
         global $txt, $context, $scripturl, $sourcedir;
 
-        $context['entries'] = $this->service->getEntries();
-        $context['sub_template'] = 'auto_respond_list';
-        $context['page_title'] = $txt['AR_admin_list'];
-        $context['linktree'][] = [
-            'url' => $scripturl. '?'. self::URL .';sa=list',
-            'name' => $txt['AR_admin_list'],
-        ];
+        $context['data'] = $this->service->getEntries();
     }
 
     public function delete(): void
@@ -119,31 +113,21 @@ class AutoRespondAdmin
 
     }
 
-    public function add()
+    public function add(): void
     {
         global $txt, $context, $scripturl, $sourcedir;
 
         // check if we need it
         // AutoRespondHeaders();
 
-        $context['sub_template'] = 'auto_respond_add';
-        $context['page_title'] = $txt['AR_admin_adding'];
-        $context['linktree'][] = array(
-            'url' => $scripturl. '?action=admin;area=autorespond;sa=add',
-            'name' => $txt['AR_admin_adding'],
-        );
+        $id = $_REQUEST['id'] ?? 0;
+        $isEditing = !empty($id);
+        $entry = $isEditing ? $this->service->getEntries([$id])['entries'][$id] : [];
 
-        /* This are empty...nobody knows why... (rolleyes) */
-        $context['autorespond']['add'] = [
-            'board_id' => [],
-            'body' => '',
-            'title' => '',
-            'user_id' => '',
-            'id' => ''
+        $context['data'] = [
+            'entry' => (array) $entry,
+            'boards' => $this->service->getBoards()
         ];
-
-        /* Load all boards */
-        $context['autorespond']['boards'] = [];
     }
 
     protected function setContext(string $action): void
@@ -153,10 +137,6 @@ class AutoRespondAdmin
         $context['sub_action'] = $action;
         $context['sub_template'] = 'show_' . $action;
         $context['page_title'] = $txt['AR_admin_' . $action];
-        $context['linktree'][] = [
-            'url' => $scripturl. '?' . self::URL . ';sa=' . $action,
-            'name' => $txt['AR_admin_' . $action],
-        ];
         $context['post_url'] = $scripturl . '?' . self::URL .';save';
         $context['settings_title'] = $context['page_title'];
     }
