@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
-* Auto respond mod (SMF)
-*
-* @package AutoRespond
-* @version 2.1
-* @author Michel Mendiola <suki@missallsunday.com>
-* @copyright Copyright (c) 2024  Michel Mendiola
-* @license https://opensource.org/license/mit/
-*/
+ * Auto respond mod (SMF)
+ *
+ * @package AutoRespond
+ * @version 2.1
+ * @author Michel Mendiola <suki@missallsunday.com>
+ * @copyright Copyright (c) 2024  Michel Mendiola
+ * @license https://opensource.org/license/mit/
+ */
 
 namespace AutoRespond;
 
@@ -142,9 +142,9 @@ class AutoRespondService
             FROM {db_prefix}autorespond
             WHERE find_in_set("{int:boardId}",board_id) <> 0
             ORDER BY {raw:sort}', [
-                'sort' => 'id',
-                'boardId' => $boardId
-            ]));
+            'sort' => 'id',
+            'boardId' => $boardId
+        ]));
     }
 
     public function getBoards(): array
