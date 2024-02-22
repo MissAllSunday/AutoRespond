@@ -18,14 +18,14 @@ use AutoRespond\AutoRespondService as AutoRespondService;
 
 class AutoRespondAdmin
 {
-    public const ACTIONS = [
+    const ACTIONS = [
         'settings',
         'list',
         'add',
         'delete',
     ];
-    public const URL = 'action=admin;area=autorespond';
-    public const NOT_EMPTY_VALUES = [
+    const URL = 'action=admin;area=autorespond';
+    const NOT_EMPTY_VALUES = [
         'body',
         'board_id'
     ];
@@ -177,43 +177,6 @@ class AutoRespondAdmin
         $context['page_title'] = $txt['AR_admin_' . $action];
         $context['post_url'] = $scripturl . '?' . self::URL .';save';
         $context['settings_title'] = $context['page_title'];
-    }
-
-    public function delete(): void
-    {
-        // check the entry exists
-
-        // delete the entry
-
-        redirectexit(self::URL . ';sa=list');
-
-    }
-
-    public function add()
-    {
-        global $txt, $context, $scripturl, $sourcedir;
-
-        // check if we need it
-        // AutoRespondHeaders();
-
-        $context['sub_template'] = 'auto_respond_add';
-        $context['page_title'] = $txt['AR_admin_adding'];
-        $context['linktree'][] = array(
-            'url' => $scripturl. '?action=admin;area=autorespond;sa=add',
-            'name' => $txt['AR_admin_adding'],
-        );
-
-        /* This are empty...nobody knows why... (rolleyes) */
-        $context['autorespond']['add'] = [
-            'board_id' => [],
-            'body' => '',
-            'title' => '',
-            'user_id' => '',
-            'id' => ''
-        ];
-
-        /* Load all boards */
-        $context['autorespond']['boards'] = [];
     }
 
     protected function loadRequiredFiles(): void
