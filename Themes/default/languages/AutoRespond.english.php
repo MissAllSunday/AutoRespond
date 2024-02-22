@@ -12,7 +12,7 @@
 
 global $txt, $scripturl;
 
-$txt['AR_basic_settings'] = 'Auto Respond Settings';
+$txt['AR_admin_settings'] = 'Auto Respond Settings';
 $txt['AR_list_page'] = 'Message\'s list';
 $txt['AR_admin_add'] = 'Add a new message';
 $txt['AR_menu'] = 'Auto Respond';
