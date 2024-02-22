@@ -16,17 +16,122 @@ namespace AutoRespond;
 
 class AutoRespond
 {
-    public function getAllBoards(): array
+    const DEFAULT_POSTER_ID = 1;
+    const DEFAULT_POSTER_IP = '127.0.0.1';
+
+    private AutoRespondService $service;
+    private static int $alreadyCreatedTopicId = 0;
+    private string $msgOptionsSubject = '';
+    private string $posterOptionsName = '';
+
+    public function __construct()
     {
-        global $sourcedir;
+        // No DI :(
+        $this->service = new AutoRespondService();
+    }
+    public function handleResponse(array $msgOptions, array $topicOptions, array $posterOptions): void
+    {
+        global $board;
 
-        require_once($sourcedir . '/Subs-Boards.php');
+        if (!$this->service->isModEnable() || $this->isRecursive($topicOptions['id'])) {
+            return;
+        }
 
-        return getTreeOrder()['boards'];
+        $this->msgOptionsSubject = $msgOptions['subject'];
+        $this->posterOptionsName = $posterOptions['name'];
+
+        foreach ($this->service->getEntriesByBoard($board) as $entry)  {
+            $this->createResponse($entry);
+        }
     }
 
-    public function getEntry(): AutoRespondEntity
+    public function createResponse(AutoRespondEntity $entry): void
     {
-        return new AutoRespondEntity();
+        global $sourcedir, $topic;
+
+        require_once($sourcedir . '/Subs-Post.php');
+
+        $newMsgOptions = [
+            'id' => 0,
+            'subject' => $this->setSubject($entry),
+            'body' => $this->setBody($entry),
+            'icon' => 'xx',
+            'smileys_enabled' => 1,
+            'attachments' => [],
+        ];
+
+        $newTopicOptions = [
+            'id' => $topic,
+            'board' => $entry->getBoardId(),
+            'poll' => null,
+            'lock_mode' => !empty($modSettings['AR_lock_topic_after']) ? 1 : null,
+            'sticky_mode' => null,
+            'mark_as_read' => false,
+        ];
+
+        $newPosterOptions = array(
+            'id' => $this->getPosterId($entry),
+            'name' => '',
+            'email' => '',
+            'update_post_count' => !empty($modSettings['AR_update_post_count']) ? 1 : 0,
+            'ip' => $this->getPosterIp(),
+        );
+
+        createPost($newMsgOptions, $newTopicOptions, $newPosterOptions);
+
+        self::$alreadyCreatedTopicId = $topic;
+    }
+
+    protected function setSubject(AutoRespondEntity $entry): string
+    {
+        global $modSettings;
+
+        return !empty($modSettings['AR_use_title']) ? $entry->getTitle() : $this->msgOptionsSubject;
+    }
+
+    protected function setBody(AutoRespondEntity $entry): string
+    {
+        return un_preparsecode($this->parseMessage($entry->getBody()));
+    }
+
+    protected function getPosterId(AutoRespondEntity $entry): int
+    {
+        $userID = $entry->getUserId();
+
+        return !$userID ? $userID : self::DEFAULT_POSTER_ID;
+    }
+
+    protected function getPosterIp(): string
+    {
+        global $modSettings;
+
+        return !empty($modSettings['AR_dummy_ip']) ? self::DEFAULT_POSTER_IP : '';
+    }
+
+    protected function parseMessage(string $messageBody) : string
+    {
+        $replacements = [
+            'TOPIC_POSTER' => $this->posterOptionsName,
+            'POSTED_TIME' => date("F j, Y, g:i a"),
+            'TOPIC_SUBJECT' => $this->msgOptionsSubject,
+        ];
+
+        /* Split the replacements up into two arrays, for use with str_replace */
+        $find = [];
+        $replace = [];
+
+        foreach ($replacements as $f => $r)
+        {
+            $find[] = '{' . $f . '}';
+            $replace[] = $r;
+        }
+
+        /* Do the variable replacements. */
+        return str_replace($find, $replace, $messageBody);
+    }
+
+    protected function isRecursive(int $topicId): bool
+    {
+        return self::$alreadyCreatedTopicId === $topicId;
     }
 }
