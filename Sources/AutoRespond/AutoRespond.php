@@ -87,7 +87,7 @@ class AutoRespond
 
     protected function setSubject(AutoRespondEntity $entry): string
     {
-        return $entry->getTitle() ?? $this->msgOptionsSubject;
+        return empty($entry->getTitle()) ? $this->msgOptionsSubject : $entry->getTitle();
     }
 
     protected function setBody(AutoRespondEntity $entry): string

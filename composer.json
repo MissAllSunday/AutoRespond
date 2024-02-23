@@ -18,5 +18,8 @@
   "require": {
     "php": ">=7.4",
     "ext-ctype": "*"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "2.0.x-dev"
   }
 }
