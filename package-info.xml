@@ -44,7 +44,7 @@
 	</install>
 	<uninstall for="2.1 - 2.1.99">
 		<hook hook="integrate_admin_areas" function="$sourcedir/AutoRespond/AutoRespondAdmin.php|\AutoRespond\AutoRespondAdmin::menu#" reverse="true" />
-		<hook hook="integrate_post2_end" function="$sourcedir/AutoRespond/AutoRespond.php|\AutoRespond\AutoRespond::handleRespond#" reverse="true" />
+		<hook hook="integrate_create_topic" function="$sourcedir/AutoRespond/AutoRespond.php|\AutoRespond\AutoRespond::handleRespond#" reverse="true" />
 		<database>install.php</database>
 		<remove-dir name="$sourcedir/AutoRespond" />
 		<remove-file name="$themedir/AutoRespond.template.php" />

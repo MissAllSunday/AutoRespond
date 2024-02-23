@@ -5,7 +5,7 @@
  *
  * @package AutoRespond
  * @version 2.1
- * @author Jessica González <suki@missallsunday.com>
+ * @author Michel Mendiola <suki@missallsunday.com>
  * @copyright Copyright (c) 2024  Michel Mendiola
  * @license https://opensource.org/license/mit/
  */
