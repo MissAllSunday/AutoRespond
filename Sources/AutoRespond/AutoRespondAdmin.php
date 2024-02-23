@@ -155,13 +155,13 @@ class AutoRespondAdmin
 
     protected function save(array $data, int $id): void
     {
-        global $context;
-
         $call = $id ? 'update' : 'insert';
 
         $this->service->{$call}($data, $id);
 
-        $context['data']['success'] = true;
+        $_SESSION['autorespond'] = 'AR_form_success_'. ($id ? 'edit' :  'add');
+
+        redirectexit(self::URL .';sa=list');
     }
 
     protected function setContext(string $action): void

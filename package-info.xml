@@ -47,5 +47,7 @@
 		<hook hook="integrate_post2_end" function="$sourcedir/AutoRespond/AutoRespond.php|AutoRespond" reverse="true" />
 		<database>install.php</database>
 		<remove-dir name="$sourcedir/AutoRespond" />
+		<remove-file name="$themedir/AutoRespond.template.php" />
+		<remove-file name="$languagedir/AutoRespond.english.php" />
 	</uninstall>
 </package-info>

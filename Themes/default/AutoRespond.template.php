@@ -22,10 +22,6 @@ function template_ar_show_add()
 </div>
 <div class="windowbg">';
 
-    if (!empty($context['data']['success'])) {
-        echo '<div class="noticebox">'. $txt['AR_form_success'. $action] .'</div>';
-    }
-
     if (!empty($context['data']['errors'])) {
         echo '<div class="errorbox">'. $txt['AR_form_error_empty'] .'<br /><ul>';
 
@@ -93,6 +89,12 @@ function template_ar_show_add()
 function template_ar_show_list()
 {
 	global $context, $txt, $scripturl;
+
+    if (!empty($_SESSION['autorespond'])) {
+        echo '<div class="infobox">'. $txt[$_SESSION['autorespond']] .'</div>';
+
+        unset($_SESSION['autorespond']);
+    }
 
 	if (empty($context['data']['entries']))
 		echo '
