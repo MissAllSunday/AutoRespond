@@ -81,8 +81,8 @@ class AutoRespondService
         }
 
         $smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}log_boards
-			WHERE board_id IN ({array_int:autoRespondIds})',
+			DELETE FROM {db_prefix}'. self::TABLE .'
+			WHERE id IN ({array_int:autoRespondIds})',
             ['autoRespondIds' => $autoRespondIds]
         );
     }

@@ -111,19 +111,22 @@ class AutoRespondAdmin
 
     public function delete(): void
     {
-        // check the entry exists
+        $id = $this->service->sanitize($_GET['id']);
+        $message = 'AR_error_delete';
 
-        // delete the entry
+        if ($id) {
+            $this->service->deleteEntries([$id]);
+            $message = 'AR_form_success_delete';
+        }
 
-        redirectexit(self::URL . ';sa=list');
-
+       $this->redirect($message);
     }
 
     public function add(): void
     {
-        global $txt, $context, $scripturl, $sourcedir;
+        global $context;
 
-        $id = (int) $_REQUEST['id'] ?? 0;
+        $id = isset($_GET['id']) ? $this->service->sanitize($_GET['id']) : 0;
 
         $context['data'] = [
             'entry' => $this->service->getEntry($id),
@@ -156,7 +159,12 @@ class AutoRespondAdmin
 
         $this->service->{$call}($data, $id);
 
-        $_SESSION['autorespond'] = 'AR_form_success_'. ($id ? 'edit' :  'add');
+        $this->redirect('AR_form_success_'. ($id ? 'edit' :  'add'));
+    }
+
+    protected function redirect(string $message = ''): void
+    {
+        $_SESSION['autorespond'] = $message;
 
         redirectexit(self::URL .';sa=list');
     }

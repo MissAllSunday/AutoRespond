@@ -102,6 +102,8 @@ function template_ar_show_list()
             <div class="noticebox">' . $txt['AR_empty_message_list'] . '</div>';
     } else
 	{
+        $session = ';'. $context['session_var'] .'='. $context['session_id'];
+
 		echo '
 		<table class="table_grid">
 			<thead>
@@ -133,10 +135,10 @@ function template_ar_show_list()
 						'. $context['data']['users'][$entry->getUserId()]['link_color'] .'
 						</td>
 						<td>
-						<a href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=add;id='. $id.'">'.$txt['AR_form_send_edit'].'</a>
+						<a href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=add;id='. $id . $session .'">'.$txt['AR_form_send_edit'].'</a>
 						</td>
 						<td class="windowbg2">
-						<a href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=delete;arid='. $id.'" class="you_sure">'.$txt['AR_delete_this'].'</a>
+						<a href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=delete;id='. $id . $session .'" class="you_sure">'.$txt['AR_delete_this'].'</a>
 						</td>
 					</tr>';
 
