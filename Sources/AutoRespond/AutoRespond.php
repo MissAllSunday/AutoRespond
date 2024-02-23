@@ -23,10 +23,14 @@ class AutoRespond
 
     public function __construct()
     {
+        global $sourcedir;
+
         // No DI :(
+        require_once($sourcedir . '/AutoRespond/AutoRespondService.php');
+
         $this->service = new AutoRespondService();
     }
-    public function handleResponse(array $msgOptions, array $topicOptions, array $posterOptions): void
+    public function handleRespond(array $msgOptions, array $topicOptions, array $posterOptions): void
     {
         global $board;
 
@@ -37,14 +41,16 @@ class AutoRespond
         $this->msgOptionsSubject = $msgOptions['subject'];
         $this->posterOptionsName = $posterOptions['name'];
 
-        foreach ($this->service->getEntriesByBoard($board) as $entry)  {
-            $this->createResponse($entry);
+        $data = $this->service->getEntriesByBoard($topicOptions['board']);
+
+        foreach ($data['entries'] as $entry)  {
+            $this->createResponse($entry, (int) $topicOptions['id']);
         }
     }
 
-    public function createResponse(AutoRespondEntity $entry): void
+    public function createResponse(AutoRespondEntity $entry, int $topic): void
     {
-        global $sourcedir, $topic;
+        global $sourcedir, $modSettings;
 
         require_once($sourcedir . '/Subs-Post.php');
 

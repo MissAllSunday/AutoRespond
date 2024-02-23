@@ -32,14 +32,12 @@ class AutoRespondService
     {
         global $modSettings;
 
-        return empty($modSettings['AR_enable']);
+        return !empty($modSettings['AR_enable']);
     }
 
     public function insert(array $data) : void
     {
         global $smcFunc;
-
-//        var_dump($this->formatData($data));die;
 
         $smcFunc['db_insert']('insert',
             '{db_prefix}'. self::TABLE,
@@ -139,18 +137,14 @@ class AutoRespondService
             return [];
         }
 
-        $request = $smcFunc['db_query']('', '
-		SELECT id, board_id, user_id, title, body
-		FROM {db_prefix}autorespond AS c
-		WHERE find_in_set("{int:boardId}",board_id) <> 0
-		ORDER BY {raw:sort}',
-            [
+        return $this->prepareData($smcFunc['db_query']('', '
+            SELECT id, board_id, user_id, title, body
+            FROM {db_prefix}autorespond
+            WHERE find_in_set("{int:boardId}",board_id) <> 0
+            ORDER BY {raw:sort}', [
                 'sort' => 'id',
                 'boardId' => $boardId
-            ]
-        );
-
-        return $this->prepareData($smcFunc['db_fetch_all']($request));
+            ]));
     }
 
     public function getBoards(): array

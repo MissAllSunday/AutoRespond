@@ -15,10 +15,7 @@ global $txt;
 // Admin
 $txt['AR_menu'] = 'Auto Respond mod';
 $txt['AR_admin_panel'] = 'Auto Respond admin panel';
-$txt['AR_admin_panel_desc'] = 'This is the admin panel for the Auto Respond mod, from here you can add/delete/edit your custom messages.<br />Some descriptions:<br />
--Message: It\'s a small preview of your full message.<br />
--Board ID: a comma separate list of the boards where this message will appear as a response.<br/>
--User ID: the user who will post this message.';
+$txt['AR_admin_panel_desc'] = 'This is the admin panel for the Auto Respond mod, from here you can add/delete/edit your custom messages.';
 
 $txt['AR_admin_settings'] = 'Settings';
 $txt['AR_admin_add'] = 'Add a new message';
