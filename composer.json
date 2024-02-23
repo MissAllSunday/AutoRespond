@@ -14,5 +14,8 @@
       "AutoRespond\\": "Sources/AutoRespond/"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "require": {
+    "ext-ctype": "*"
+  }
 }

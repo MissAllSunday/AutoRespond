@@ -12,6 +12,11 @@ class AutoRespondEntity
 
     public function __construct(array $entry = [])
     {
+        $this->setEntry($entry);
+    }
+
+    public function setEntry(array $entry): void
+    {
         foreach ($entry as $key => $value) {
             $setCall = 'set' . $this->snakeToCamel($key);
             $this->{$setCall}($value);

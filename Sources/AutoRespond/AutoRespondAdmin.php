@@ -25,6 +25,12 @@ class AutoRespondAdmin
         'delete',
     ];
     const URL = 'action=admin;area=autorespond';
+
+    const NOT_EMPTY_VALUES = [
+        'title',
+        'body',
+        'board_id'
+    ];
     private AutoRespondService $service;
 
     public function __construct()
@@ -76,7 +82,9 @@ class AutoRespondAdmin
 
     public function settings(): void
     {
-        global $txt;
+        global $txt, $context;
+
+        $context['sub_template'] = 'show_settings';
 
         $config_vars = [
             ['check', 'AR_enable', 'subtext' => $txt['AR_enable_sub']],
@@ -98,7 +106,7 @@ class AutoRespondAdmin
 
     function list(): void
     {
-        global $txt, $context, $scripturl, $sourcedir;
+        global $context;
 
         $context['data'] = $this->service->getEntries();
     }
@@ -121,13 +129,34 @@ class AutoRespondAdmin
         // AutoRespondHeaders();
 
         $id = $_REQUEST['id'] ?? 0;
-        $isEditing = !empty($id);
-        $entry = $isEditing ? $this->service->getEntries([$id])['entries'][$id] : [];
 
         $context['data'] = [
-            'entry' => (array) $entry,
-            'boards' => $this->service->getBoards()
+            'entry' => $this->service->getEntry($id),
+            'boards' => $this->service->getBoards(),
+            'errors' => []
         ];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $this->service->sanitize($_POST);
+
+            if ($this->validate($data)) {
+                $this->save($data);
+            }
+        }
+    }
+
+    protected function validate(array $data): bool
+    {
+        global $context;
+
+        $context['data']['errors'] = array_values(array_diff(array_values(self::NOT_EMPTY_VALUES), array_keys($data)));
+
+        return empty($context['data']['errors']);
+    }
+
+    protected function save(array $data): void
+    {
+var_dump('save');
     }
 
     protected function setContext(string $action): void
@@ -135,7 +164,7 @@ class AutoRespondAdmin
         global $context, $scripturl, $txt;
 
         $context['sub_action'] = $action;
-        $context['sub_template'] = 'show_' . $action;
+        $context['sub_template'] = 'ar_show_' . $action;
         $context['page_title'] = $txt['AR_admin_' . $action];
         $context['post_url'] = $scripturl . '?' . self::URL .';save';
         $context['settings_title'] = $context['page_title'];

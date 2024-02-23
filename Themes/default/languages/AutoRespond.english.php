@@ -29,17 +29,20 @@ $txt['AR_admin_edit'] = 'Edit this message:';
 
 
 //Form
-$txt['AR_form_title'] = 'The message\'s title: (max size allowed: 255)';
+$txt['AR_form_title'] = 'The message\'s title:';
+$txt['AR_form_title_desc'] = 'max size allowed: 255)';
 $txt['AR_form_body'] = 'The message\'s content:';
-$txt['AR_form_body_desc'] = '<br />You can use BBC as well as the following variables:<br />
+$txt['AR_form_body_desc'] = 'You can use BBC as well as the following variables:<br />
 - {TOPIC_POSTER} The topic\'s poster name.<br />
 - {POSTED_TIME} Formatted time.<br />
 - {TOPIC_SUBJECT} The topic subject.';
-$txt['AR_form_boards'] = 'Select the boards where this message will appear as a response:';
+$txt['AR_form_boards'] = $txt['AR_form_board_id'] = 'Select the boards where this message will appear as a response:';
 $txt['AR_form_user'] = 'ID of the user who will post the reply:';
+$txt['AR_form_user_desc'] = 'If left empty, the mod will use the default user ID: 1';
 $txt['AR_form_send_add'] = 'Create';
 $txt['AR_form_send_edit'] = 'Edit';
-$txt['AR_delete_confirmation'] = 'Do you reallt want to delete %s ?';
+$txt['AR_form_error_empty'] = 'The following fields should not be left empty:';
+$txt['AR_delete_confirmation'] = 'Do you really want to delete %s ?';
 $txt['AR_delete_this'] = 'Delete';
 $txt['AR_admin_adding'] = 'Adding a new custom message';
 $txt['AR_enable'] = 'Enable AutoRespond mod:';

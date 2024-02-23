@@ -16,6 +16,13 @@ namespace AutoRespond;
 
 class AutoRespondService
 {
+    public function __construct()
+    {
+        global $sourcedir;
+
+        // No DI :(
+        require_once($sourcedir . '/AutoRespond/AutoRespondEntity.php');
+    }
     public function isModEnable(): bool
     {
         global $modSettings;
@@ -59,6 +66,34 @@ class AutoRespondService
         );
 
         return $this->prepareData($smcFunc['db_fetch_all']($request));
+    }
+
+    public function getEntry(int $id): AutoRespondEntity
+    {
+        global $smcFunc;
+        $entry = new AutoRespondEntity();
+
+        if (empty($id)) {
+            return $entry;
+        }
+
+        $request = $smcFunc['db_query']('', '
+		SELECT id, board_id, user_id, title, body
+		FROM {db_prefix}autorespond AS c
+		WHERE id = {int:id}
+		ORDER BY {raw:sort}',
+            [
+                'sort' => 'id',
+                'id' => $id
+            ]
+        );
+
+        list ($entry) = $smcFunc['db_fetch_row']($request);
+        $smcFunc['db_free_result']($request);
+
+        $entry->setEntry($entry);
+
+        return $entry;
     }
 
     public function getEntriesByBoard(int $boardId = 0): array
@@ -125,5 +160,29 @@ class AutoRespondService
         }
 
         return $usersData;
+    }
+
+    public function sanitize(mixed $variable): mixed
+    {
+        global $smcFunc;
+
+        if (is_array($variable)) {
+            foreach ($variable as $key => $variableValue) {
+                $variable[$key] = $this->sanitize($variableValue);
+            }
+
+            return array_filter($variable);
+        }
+
+        $var = $smcFunc['htmlspecialchars'](
+            $smcFunc['htmltrim']((string) $variable),
+            \ENT_QUOTES
+        );
+
+        if (ctype_digit($var)) {
+            $var = (int) $var;
+        }
+
+        return $var;
     }
 }
