@@ -16,6 +16,11 @@ namespace AutoRespond;
 
 class AutoRespondService
 {
+    const TABLE = 'autorespond';
+
+    const DEFAULT_POSTER_ID = 1;
+    const DEFAULT_POSTER_IP = '127.0.0.1';
+
     public function __construct()
     {
         global $sourcedir;
@@ -29,6 +34,44 @@ class AutoRespondService
 
         return empty($modSettings['AR_enable']);
     }
+
+    public function insert(array $data) : void
+    {
+        global $smcFunc;
+
+//        var_dump($this->formatData($data));die;
+
+        $smcFunc['db_insert']('insert',
+            '{db_prefix}'. self::TABLE,
+            ['user_id' => 'int', 'title' => 'string', 'board_id' => 'string', 'body' => 'string'],
+            $this->formatData($data),
+            ['id']
+        );
+    }
+
+    public function update(array $data, int $id): void
+    {
+        global $smcFunc;
+
+        $data = $this->formatData($data);
+
+        $smcFunc['db_query']('', '
+			UPDATE {db_prefix}'. self::TABLE .'
+			SET board_id = {string:id_board}
+			SET user_id = {int:user_id}
+			SET title = {string:title}
+			SET body = {string:body}
+			WHERE id = {int:id}',
+            [
+                'board_id' => $data['board_id'],
+                'user_id' => $data['user_id'],
+                'title' => $data['title'],
+                'body' => $data['body'],
+                'id' => $id,
+            ]
+        );
+    }
+
     public function deleteEntries(array $autoRespondIds = []): void
     {
         global $smcFunc;
@@ -129,6 +172,30 @@ class AutoRespondService
         return $boards;
     }
 
+    public function sanitize(mixed $variable): mixed
+    {
+        global $smcFunc;
+
+        if (is_array($variable)) {
+            foreach ($variable as $key => $variableValue) {
+                $variable[$key] = $this->sanitize($variableValue);
+            }
+
+            return array_filter($variable);
+        }
+
+        $var = $smcFunc['htmlspecialchars'](
+            $smcFunc['htmltrim']((string) $variable),
+            \ENT_QUOTES
+        );
+
+        if (ctype_digit($var)) {
+            $var = (int) $var;
+        }
+
+        return $var;
+    }
+
     protected function prepareData($request) : array
     {
         global $smcFunc;
@@ -162,27 +229,12 @@ class AutoRespondService
         return $usersData;
     }
 
-    public function sanitize(mixed $variable): mixed
+    protected function formatData(array $data): array
     {
-        global $smcFunc;
+        $data = array_merge(['user_id' => self::DEFAULT_POSTER_ID], $data);
+        $data['board_id'] = implode(',', $data['board_id']);
+        array_pop($data);
 
-        if (is_array($variable)) {
-            foreach ($variable as $key => $variableValue) {
-                $variable[$key] = $this->sanitize($variableValue);
-            }
-
-            return array_filter($variable);
-        }
-
-        $var = $smcFunc['htmlspecialchars'](
-            $smcFunc['htmltrim']((string) $variable),
-            \ENT_QUOTES
-        );
-
-        if (ctype_digit($var)) {
-            $var = (int) $var;
-        }
-
-        return $var;
+        return $data;
     }
 }

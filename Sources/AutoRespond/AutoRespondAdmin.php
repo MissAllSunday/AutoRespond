@@ -27,7 +27,6 @@ class AutoRespondAdmin
     const URL = 'action=admin;area=autorespond';
 
     const NOT_EMPTY_VALUES = [
-        'title',
         'body',
         'board_id'
     ];
@@ -89,7 +88,6 @@ class AutoRespondAdmin
         $config_vars = [
             ['check', 'AR_enable', 'subtext' => $txt['AR_enable_sub']],
             ['check', 'AR_update_post_count', 'subtext' => $txt['AR_update_post_count_sub']],
-            ['check', 'AR_use_title', 'subtext' => $txt['AR_use_title_sub']],
             ['check', 'AR_lock_topic_after', 'subtext' => $txt['AR_lock_topic_after_sub']],
             ['check', 'AR_dummy_ip', 'subtext' => $txt['AR_dummy_ip_sub']],
         ];
@@ -133,14 +131,15 @@ class AutoRespondAdmin
         $context['data'] = [
             'entry' => $this->service->getEntry($id),
             'boards' => $this->service->getBoards(),
-            'errors' => []
+            'errors' => [],
+            'success' => false
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->service->sanitize($_POST);
 
             if ($this->validate($data)) {
-                $this->save($data);
+                $this->save($data, $id);
             }
         }
     }
@@ -154,9 +153,15 @@ class AutoRespondAdmin
         return empty($context['data']['errors']);
     }
 
-    protected function save(array $data): void
+    protected function save(array $data, int $id): void
     {
-var_dump('save');
+        global $context;
+
+        $call = $id ? 'update' : 'insert';
+
+        $this->service->{$call}($data, $id);
+
+        $context['data']['success'] = true;
     }
 
     protected function setContext(string $action): void

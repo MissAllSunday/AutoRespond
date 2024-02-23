@@ -27,7 +27,7 @@ if (!empty($context['uninstalling'])) {
 }
 
 $table = [
-    'table_name' => 'autorespond',
+    'table_name' => '{db_prefix}autorespond',
     'columns' => [
         [
             'name' => 'id',

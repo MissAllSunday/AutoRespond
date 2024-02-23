@@ -10,7 +10,7 @@
  * @license http://www.mozilla.org/MPL/ MPL 2.0
  */
 
-global $txt, $scripturl;
+global $txt;
 
 // Admin
 $txt['AR_menu'] = 'Auto Respond mod';
@@ -27,10 +27,9 @@ $txt['AR_admin_edit'] = 'Editing: %s';
 $txt['AR_admin_delete'] = 'Deleting: %s';
 $txt['AR_admin_edit'] = 'Edit this message:';
 
-
 //Form
 $txt['AR_form_title'] = 'The message\'s title:';
-$txt['AR_form_title_desc'] = 'max size allowed: 255)';
+$txt['AR_form_title_desc'] = 'max size allowed: 255). If empty the mod will use the original topic\'s subject';
 $txt['AR_form_body'] = 'The message\'s content:';
 $txt['AR_form_body_desc'] = 'You can use BBC as well as the following variables:<br />
 - {TOPIC_POSTER} The topic\'s poster name.<br />
@@ -42,6 +41,8 @@ $txt['AR_form_user_desc'] = 'If left empty, the mod will use the default user ID
 $txt['AR_form_send_add'] = 'Create';
 $txt['AR_form_send_edit'] = 'Edit';
 $txt['AR_form_error_empty'] = 'The following fields should not be left empty:';
+$txt['AR_form_success_add'] = 'The entry has been created successfully.';
+$txt['AR_form_success_edit'] = 'The entry has been updated successfully.';
 $txt['AR_delete_confirmation'] = 'Do you really want to delete %s ?';
 $txt['AR_delete_this'] = 'Delete';
 $txt['AR_admin_adding'] = 'Adding a new custom message';
@@ -52,8 +53,6 @@ $txt['AR_list_body'] = 'Message';
 $txt['AR_list_id'] = 'ID';
 $txt['AR_list_user'] = 'User ID';
 $txt['AR_list_board'] = 'Board ID';
-$txt['AR_AR_use_title'] = 'Use the message\'s title instead of the topic subject?';
-$txt['AR_use_title_sub'] = 'If checked, the auto respond message will use the message\'s title as the auto respond message subject, leave empty to use the topic\'s subject.';
 $txt['AR_update_post_count'] = 'Update the poster\'s count?';
 $txt['AR_update_post_count_sub'] = 'If checked, it will increment the post account of the user who will post the reply.';
 $txt['AR_lock_topic_after'] = 'Lock the topic after the response?';

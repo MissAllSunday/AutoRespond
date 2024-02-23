@@ -14,13 +14,17 @@ function template_ar_show_add()
 {
 	global $context, $scripturl, $txt;
 
-    $style = '';
+    $action = $context['sub_action'] === 'add' ? 'add' : 'edit';
 
     echo '
 <div class="cat_bar">
     <h3 class="catbg">'. $txt['AR_admin_'. $context['sub_action']] .'</h3>
 </div>
 <div class="windowbg">';
+
+    if (!empty($context['data']['success'])) {
+        echo '<div class="noticebox">'. $txt['AR_form_success'. $action] .'</div>';
+    }
 
     if (!empty($context['data']['errors'])) {
         echo '<div class="errorbox">'. $txt['AR_form_error_empty'] .'<br /><ul>';
@@ -30,8 +34,6 @@ function template_ar_show_add()
         }
 
         echo '</ul></div>';
-
-        $style = 'style="border-color: red;"';
     }
 
     echo '
@@ -46,7 +48,7 @@ function template_ar_show_add()
                 <small>'. $txt['AR_form_title_desc'] .'</small>
             </dt>
             <dd>
-                <input '. $style .' type="text" name="title" size="55" tabindex="1" maxlength="255" value="'. $context['data']['entry']->getTitle() .'" class="input_text" />
+                <input type="text" name="title" size="55" tabindex="1" maxlength="255" value="'. $context['data']['entry']->getTitle() .'" class="input_text" />
             </dd>
             <dt>
                 <label>'. $txt['AR_form_user'] .'</label><br />
@@ -59,7 +61,7 @@ function template_ar_show_add()
     /* Boards */
     echo'
             <dt>'. $txt['AR_form_boards'] .'</dt>
-            <dd '. $style .'>';
+            <dd>';
 
     foreach($context['data']['boards'] as $board)
         echo '
@@ -76,11 +78,11 @@ function template_ar_show_add()
                 <small>'. $txt['AR_form_body_desc'] .'</small>
             </dt>
             <dd>
-                <textarea '. $style .' rows="15" cols="50" name="body" id="body">'. $context['data']['entry']->getBody() .'</textarea>
+                <textarea rows="15" cols="50" name="body" id="body">'. $context['data']['entry']->getBody() .'</textarea>
             </dd>     
         </dl>
         <div id="confirm_buttons">
-            <input type="submit" value="'. $txt['AR_form_send_'. $context['sub_action']] . '" class="button">
+            <input type="submit" value="'. $txt['AR_form_send_'. $action] . '" class="button">
             <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
         </div>         
     </form>

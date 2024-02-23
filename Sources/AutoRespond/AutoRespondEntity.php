@@ -6,7 +6,7 @@ class AutoRespondEntity
 {
     public string $body = '';
     public string $title = '';
-    public int $user_id = 0;
+    public int $user_id = 1;
     public int $id = 0;
     public int $board_id = 0;
 

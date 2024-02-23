@@ -16,9 +16,6 @@ namespace AutoRespond;
 
 class AutoRespond
 {
-    const DEFAULT_POSTER_ID = 1;
-    const DEFAULT_POSTER_IP = '127.0.0.1';
-
     private AutoRespondService $service;
     private static int $alreadyCreatedTopicId = 0;
     private string $msgOptionsSubject = '';
@@ -84,9 +81,7 @@ class AutoRespond
 
     protected function setSubject(AutoRespondEntity $entry): string
     {
-        global $modSettings;
-
-        return !empty($modSettings['AR_use_title']) ? $entry->getTitle() : $this->msgOptionsSubject;
+        return $entry->getTitle() ?? $this->msgOptionsSubject;
     }
 
     protected function setBody(AutoRespondEntity $entry): string
@@ -98,14 +93,14 @@ class AutoRespond
     {
         $userID = $entry->getUserId();
 
-        return !$userID ? $userID : self::DEFAULT_POSTER_ID;
+        return $userID ?: AutoRespondService::DEFAULT_POSTER_ID;
     }
 
     protected function getPosterIp(): string
     {
         global $modSettings;
 
-        return !empty($modSettings['AR_dummy_ip']) ? self::DEFAULT_POSTER_IP : '';
+        return !empty($modSettings['AR_dummy_ip']) ? AutoRespondService::DEFAULT_POSTER_IP : '';
     }
 
     protected function parseMessage(string $messageBody) : string
