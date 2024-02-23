@@ -123,16 +123,13 @@ class AutoRespondAdmin
     {
         global $txt, $context, $scripturl, $sourcedir;
 
-        // check if we need it
-        // AutoRespondHeaders();
-
-        $id = $_REQUEST['id'] ?? 0;
+        $id = (int) $_REQUEST['id'] ?? 0;
 
         $context['data'] = [
             'entry' => $this->service->getEntry($id),
             'boards' => $this->service->getBoards(),
             'errors' => [],
-            'success' => false
+            'id' => $id
         ];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -14,7 +14,8 @@ function template_ar_show_add()
 {
 	global $context, $scripturl, $txt;
 
-    $action = $context['sub_action'] === 'add' ? 'add' : 'edit';
+    $action = $context['data']['id'] ? 'edit' : 'add';
+    $id = $context['data']['id'] ? (';id='. $context['data']['id']) : '';
 
     echo '
 <div class="cat_bar">
@@ -33,7 +34,7 @@ function template_ar_show_add()
     }
 
     echo '
-    <form action="'. $scripturl . '?action=admin;area=autorespond;sa='. $context['sub_action'] .'"
+    <form action="'. $scripturl . '?action=admin;area=autorespond;sa='. $context['sub_action'] . $id .'"
         name="autoRespond" 
 	    accept-charset="'. $context['character_set'] .'"
 	    method="post"
@@ -96,20 +97,17 @@ function template_ar_show_list()
         unset($_SESSION['autorespond']);
     }
 
-	if (empty($context['data']['entries']))
-		echo '
-            <div class="noticebox">'. $txt['AR_empty_message_list']  . '</div>';
-
-	/* Omgosh! */
-	else
+	if (empty($context['data']['entries'])) {
+        echo '
+            <div class="noticebox">' . $txt['AR_empty_message_list'] . '</div>';
+    } else
 	{
 		echo '
-		<table class="table_grid" cellspacing="0" width="100%">
+		<table class="table_grid">
 			<thead>
 				<tr class="catbg">
 					<th scope="col" class="first_th">'.$txt['AR_list_id'].'</th>
 					<th scope="col">'.$txt['AR_list_title'].'</th>
-					<th scope="col">'.$txt['AR_list_body'].'</th>
 					<th scope="col">'.$txt['AR_list_board'].'</th>
 					<th scope="col">'.$txt['AR_list_user'].'</th>
 					<th scope="col">'.$txt['AR_form_send_edit'].'</th>
@@ -118,29 +116,27 @@ function template_ar_show_list()
 			</thead>
 			<tbody>';
 
-		foreach($context['GetARList'] as $AR_list)
+        /* AutoRespondEntity $entry */
+		foreach($context['data']['entries'] as $id => $entry)
 			echo '
 					<tr class="windowbg" style="text-align: center">
 						<td class="windowbg2">
-						'.$AR_list['id'].'
+						'. $id .'
 						</td>
 						<td>
-						'.$AR_list['title'].'
-						</td>
-						<td class="windowbg2">
-						'.AutoRespondTruncate($AR_list['body']. 20).'
+						'. $entry->getTitle() .'
 						</td>
 						<td>
-						'.$AR_list['board_id'].'
+						'. $entry->getBoardId() .'
 						</td>
 						<td class="windowbg2">
-						'.$AR_list['user_id'].'
+						'. $context['data']['users'][$entry->getUserId()]['link_color'] .'
 						</td>
 						<td>
-						<a href="'.$scripturl. '?action=admin;area=autorespond;sa=edit;arid='.$AR_list['id'].'">'.$txt['AR_form_send_edit'].'</a>
+						<a href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=add;id='. $id.'">'.$txt['AR_form_send_edit'].'</a>
 						</td>
 						<td class="windowbg2">
-						<a href="'.$scripturl. '?action=admin;area=autorespond;sa=delete;arid='.$AR_list['id'].'">'.$txt['AR_delete_this'].'</a>
+						<a href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=delete;arid='. $id.'" class="you_sure">'.$txt['AR_delete_this'].'</a>
 						</td>
 					</tr>';
 

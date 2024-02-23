@@ -57,10 +57,10 @@ class AutoRespondService
 
         $smcFunc['db_query']('', '
 			UPDATE {db_prefix}'. self::TABLE .'
-			SET board_id = {string:id_board}
-			SET user_id = {int:user_id}
-			SET title = {string:title}
-			SET body = {string:body}
+			SET board_id = {string:board_id},
+			    user_id = {int:user_id},
+			    title = {string:title},
+			    body = {string:body}
 			WHERE id = {int:id}',
             [
                 'board_id' => $data['board_id'],
@@ -82,7 +82,7 @@ class AutoRespondService
 
         $smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}log_boards
-			WHERE id_board IN ({array_int:autoRespondIds})',
+			WHERE board_id IN ({array_int:autoRespondIds})',
             ['autoRespondIds' => $autoRespondIds]
         );
     }
@@ -91,13 +91,7 @@ class AutoRespondService
     {
         global $smcFunc;
 
-        $data = ['users', 'entries'];
-
-        if (empty($autoRespondIds)) {
-            return $data;
-        }
-
-        $request = $smcFunc['db_query']('', '
+        return $this->prepareData($smcFunc['db_query']('', '
 		SELECT id, board_id, user_id, title, body
 		FROM {db_prefix}autorespond AS c
 		'. (!empty($autoRespondIds) ? 'WHERE id IN ({array_int:autoRespondIds})' : '') .  '
@@ -106,9 +100,7 @@ class AutoRespondService
                 'sort' => 'id',
                 'autoRespondIds' => $autoRespondIds
             ]
-        );
-
-        return $this->prepareData($smcFunc['db_fetch_all']($request));
+        ));
     }
 
     public function getEntry(int $id): AutoRespondEntity
@@ -122,7 +114,7 @@ class AutoRespondService
 
         $request = $smcFunc['db_query']('', '
 		SELECT id, board_id, user_id, title, body
-		FROM {db_prefix}autorespond AS c
+		FROM {db_prefix}autorespond
 		WHERE id = {int:id}
 		ORDER BY {raw:sort}',
             [
@@ -131,10 +123,10 @@ class AutoRespondService
             ]
         );
 
-        list ($entry) = $smcFunc['db_fetch_row']($request);
+        list ($data) = $smcFunc['db_fetch_all']($request);
         $smcFunc['db_free_result']($request);
 
-        $entry->setEntry($entry);
+        $entry->setEntry($data);
 
         return $entry;
     }
@@ -200,7 +192,8 @@ class AutoRespondService
     {
         global $smcFunc;
 
-        $data = ['users', 'entries'];
+        $data['users'] = [];
+        $data['entries'] = [];
 
         foreach ($smcFunc['db_fetch_all']($request) as $row)
         {
@@ -218,12 +211,12 @@ class AutoRespondService
     {
         global $memberContext;
 
-        loadMemberData($usersIds);
-
+        $usersIds = loadMemberData(array_unique($usersIds));
         $usersData = [];
 
-        foreach ($usersIds as $id) {
-            $usersData[$id] = $memberContext[$id];
+        foreach ($usersIds as $userId) {
+            loadMemberContext($userId);
+            $usersData[$userId] = $memberContext[$userId];
         }
 
         return $usersData;
