@@ -25,7 +25,6 @@ class AutoRespondAdmin
         'delete',
     ];
     const URL = 'action=admin;area=autorespond';
-
     const NOT_EMPTY_VALUES = [
         'body',
         'board_id'
@@ -73,7 +72,7 @@ class AutoRespondAdmin
         ];
 
         $action = isset($_REQUEST['sa']) && array_search($_REQUEST['sa'], self::ACTIONS) ?
-            $_REQUEST['sa'] : self::ACTIONS[0];
+            $this->service->sanitize($_REQUEST['sa']) : self::ACTIONS[0];
 
         $this->setContext($action);
         $this->{$action}();

@@ -91,6 +91,8 @@ function template_ar_show_list()
 {
 	global $context, $txt, $scripturl;
 
+    $session = ';'. $context['session_var'] .'='. $context['session_id'];
+
     if (!empty($_SESSION['autorespond'])) {
         echo '<div class="infobox">'. $txt[$_SESSION['autorespond']] .'</div>';
 
@@ -102,8 +104,6 @@ function template_ar_show_list()
             <div class="noticebox">' . $txt['AR_empty_message_list'] . '</div>';
     } else
 	{
-        $session = ';'. $context['session_var'] .'='. $context['session_id'];
-
 		echo '
 		<table class="table_grid">
 			<thead>
@@ -146,11 +146,8 @@ function template_ar_show_list()
 		</table><br />';
 	}
 
-	/* Add button */
 	echo '
 		<div id="confirm_buttons">
-			<form action="'.$scripturl. '?action=admin;area=autorespond;sa=add" method="post" target="_self">
-				<input type="submit" name="send" class="sbtn" value="'.$txt['AR_admin_add'].'" />
-			</form>
+			<a class="button" href="'.$scripturl. '?'. \AutoRespond\AutoRespondAdmin::URL .';sa=add'. $session .'">'. $txt['AR_admin_add']  .'</a>
 		</div>';
 }
