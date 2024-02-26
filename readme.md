@@ -1,6 +1,6 @@
 **Auto Respond**, https://missallsunday.com
 
-The software is licensed under [MPL 2.0 license](https://www.mozilla.org/MPL/).
+The software is licensed under [MIT License](https://opensource.org/license/mit/).
 
 ###### Description:
 

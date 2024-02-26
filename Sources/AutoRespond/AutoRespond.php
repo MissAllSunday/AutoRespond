@@ -32,8 +32,6 @@ class AutoRespond
     }
     public function handleRespond(array $msgOptions, array $topicOptions, array $posterOptions): void
     {
-        global $board;
-
         if (!$this->service->isModEnable() || $this->isRecursive($topicOptions['id'])) {
             return;
         }

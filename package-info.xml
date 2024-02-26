@@ -7,7 +7,7 @@
 	<type>modification</type>
 
 	<install for="2.1 - 2.1.99">
-		<readme >readme.md</readme>
+		<readme>readme.md</readme>
 		<license type="inline" parsebbc="false">
 			MIT License
 
