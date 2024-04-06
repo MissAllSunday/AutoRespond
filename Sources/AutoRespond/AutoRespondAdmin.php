@@ -3,26 +3,31 @@
 declare(strict_types=1);
 
 /**
- * Auto respond mod (SMF)
- *
- * @package AutoRespond
- * @version 2.1
- * @author Michel Mendiola <suki@missallsunday.com>
- * @copyright Copyright (c) 2024  Michel Mendiola
- * @license https://opensource.org/license/mit/
- */
+* Auto respond mod (SMF)
+*
+* @package AutoRespond
+* @version 2.1
+* @author Michel Mendiola <suki@missallsunday.com>
+* @copyright Copyright (c) 2024  Michel Mendiola
+* @license https://opensource.org/license/mit/
+*/
 
 namespace AutoRespond;
 
-use AutoRespond\AutoRespondService;
+use AutoRespond\AutoRespondService as AutoRespondService;
 
 class AutoRespondAdmin
 {
     const ACTIONS = [
         'settings',
-        'listPage',
+        'list',
         'add',
         'delete',
+    ];
+    const URL = 'action=admin;area=autorespond';
+    const NOT_EMPTY_VALUES = [
+        'body',
+        'board_id'
     ];
     private AutoRespondService $service;
 
@@ -30,169 +35,160 @@ class AutoRespondAdmin
     {
         global $sourcedir;
 
-        require_once($sourcedir . '/ManageServer.php');
-        require_once($sourcedir . '/ManageSettings.php');
-
-        loadLanguage('AutoRespond');
-        loadtemplate('AutoRespond');
+        // No DI :(
+        require_once($sourcedir . '/AutoRespond/AutoRespondService.php');
 
         $this->service = new AutoRespondService();
     }
 
-    public function menu(array &$menuData): void
+    public function menu(&$admin_areas): void
     {
         global $txt;
 
-        $menuData['config']['areas']['autorespond'] = [
+        $this->loadRequiredFiles();
+
+        $admin_areas['config']['areas']['autorespond'] = [
             'label' => $txt['AR_menu'],
-            'function' => [$this, 'addSettings'],
+            'function' => [$this, 'main'],
             'icon' => 'posts.gif',
             'subsections' => [
-                'settings' => [$txt['AR_basic_settings']],
-                'listPage' => [$txt['AR_list_page']],
+                'settings' => [$txt['AR_admin_settings']],
+                'list' => [$txt['AR_admin_list']],
                 'add' => [$txt['AR_admin_add']],
             ],
         ];
     }
 
-    function addSettings($return_config = false)
+    public function main(): void
     {
         global $txt, $context;
 
-        isAllowedTo('admin_forum');
-
-        $context['page_title'] = $txt['AR_admin_panel'];
-
-        $context['sub_template'] = 'show_settings';
-
-        // Load up all the tabs...
         $context[$context['admin_menu_name']]['tab_data'] = [
             'title' => $txt['AR_admin_panel'],
             'description' => $txt['AR_admin_panel_desc'],
             'tabs' => [
-                'settings' => []
+                self::ACTIONS[0] => []
             ],
         ];
 
-        if (!empty(self::ACTIONS[$_REQUEST['sa']])) {
-            $this->{self::ACTIONS[$_REQUEST['sa']]}();
-        }
+        $action = isset($_REQUEST['sa']) && array_search($_REQUEST['sa'], self::ACTIONS) ?
+            $this->service->sanitize($_REQUEST['sa']) : self::ACTIONS[0];
 
+        $this->setContext($action);
+        $this->{$action}();
     }
 
-    function settings($return_config = false): void
+    public function settings(): void
     {
-        global $txt, $scripturl, $context;
+        global $txt, $context;
+
+        $context['sub_template'] = 'show_settings';
 
         $config_vars = [
             ['check', 'AR_enable', 'subtext' => $txt['AR_enable_sub']],
             ['check', 'AR_update_post_count', 'subtext' => $txt['AR_update_post_count_sub']],
-            ['check', 'AR_use_title', 'subtext' => $txt['AR_use_title_sub']],
             ['check', 'AR_lock_topic_after', 'subtext' => $txt['AR_lock_topic_after_sub']],
             ['check', 'AR_dummy_ip', 'subtext' => $txt['AR_dummy_ip_sub']],
-
         ];
 
-        $context['post_url'] = $scripturl . '?action=admin;area=autorespond;save';
-        $context['settings_title'] = $txt['AR_admin_panel'];
-        $context['page_title'] = $txt['AR_admin_panel'];
-        $context['sub_template'] = 'show_settings';
-
-        if (isset($_GET['save'])) {
+        if (isset($_GET['save']))
+        {
             checkSession();
             saveDBSettings($config_vars);
-            redirectexit('action=admin;area=autorespond');
+            redirectexit(self::URL);
         }
 
         prepareDBSettingContext($config_vars);
     }
 
-    function listPage()
+    function list(): void
     {
-        global $txt, $context, $scripturl;
+        global $context;
 
-        $context['GetARList'] = $this->service->getEntries();
-        $context['sub_template'] = 'auto_respond_list';
-        $context['page_title'] = $txt['AR_admin_list'];
-        $context['linktree'][] = array(
-            'url' => $scripturl . '?action=admin;area=autorespond;sa=listPage',
-            'name' => $txt['AR_admin_list'],
-        );
+        $context['data'] = $this->service->getEntries();
     }
 
-    protected function add()
+    public function delete(): void
     {
-        global $txt, $context, $scripturl, $sourcedir;
+        $id = $this->service->sanitize($_GET['id']);
+        $message = 'AR_error_delete';
 
-        require_once($sourcedir . '/Subs-Editor.php');
-
-        $id = !empty($_GET['id']) ? $_GET['id'] : 0;
-        $isEditing = !empty($id);
-        $pageTitle = $txt['AR_admin_add'];
-        $data = [];
-        $url = $scripturl . '?action=admin;area=autorespond;sa=add';
-        $buttonText = $txt['AR_form_send_add'];
-        $context['autorespond']['data'] = [
-            'title' => '',
-            'body' => '',
-            'user_id' => '',
-        ];
-
-        $editorOptions = [
-            'id' => 'autorespond',
-            'value' => '',
-            'height' => '175px',
-            'width' => '100%',
-            'labels' => [
-                'post_button' => $buttonText,
-            ],
-            'preview_type' => 2,
-            'required' => true,
-        ];
-
-        if ($isEditing) {
-            $data = $this->service->getEntries()['entries'][$id];
-            $pageTitle = sprintf($txt['AR_admin_edit'], $data['title']);
-            $url = $url . ';id=' . $id;
-            $buttonText = $txt['AR_form_send_edit'];
-            $editorOptions['value'] = $data['body'];
-            $editorOptions['labels']['post_button'] = $buttonText;
+        if ($id) {
+            $this->service->deleteEntries([$id]);
+            $message = 'AR_form_success_delete';
         }
 
-        $context['post_box_name'] = $editorOptions['id'];
-        $context['sub_template'] = 'auto_respond_add';
-        $context['page_title'] = $pageTitle;
-        $context['linktree'][] = [
-            'url' => $url,
-            'name' => $pageTitle,
-        ];
-
-        $context['autorespond'] = [
-            'url' => $url,
-            'data' => $data,
-            'boards' => $this->service->getBoards()
-        ];
-
-        create_control_richedit($editorOptions);
+       $this->redirect($message);
     }
 
-    protected function delete()
+    public function add(): void
     {
-        if (empty($_REQUEST['id'])) {
-            // set some error message about it
-            redirectexit('action=admin;area=autorespond;sa=list');
+        global $context;
+
+        $id = isset($_GET['id']) ? $this->service->sanitize($_GET['id']) : 0;
+
+        $context['data'] = [
+            'entry' => $this->service->getEntry($id),
+            'boards' => $this->service->getBoards(),
+            'errors' => [],
+            'id' => $id
+        ];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $this->service->sanitize($_POST);
+
+            if ($this->validate($data)) {
+                $this->save($data, $id);
+            }
         }
+    }
 
-        $id = $_REQUEST['id'];
-        $entry = $this->service->getEntries([$id])['entries'][$id];
+    protected function validate(array $data): bool
+    {
+        global $context;
 
-        if (empty($entry)) {
-            // set some error not valid
-            redirectexit('action=admin;area=autorespond;sa=list');
-        }
+        $context['data']['errors'] = array_values(array_diff(array_values(self::NOT_EMPTY_VALUES), array_keys($data)));
 
-        $this->service->deleteEntries([$id]);
+        return empty($context['data']['errors']);
+    }
 
-        redirectexit('action=admin;area=autorespond;sa=list');
+    protected function save(array $data, int $id): void
+    {
+        $call = $id ? 'update' : 'insert';
+
+        $this->service->{$call}($data, $id);
+
+        $this->redirect('AR_form_success_'. ($id ? 'edit' :  'add'));
+    }
+
+    protected function redirect(string $message = ''): void
+    {
+        $_SESSION['autorespond'] = $message;
+
+        redirectexit(self::URL .';sa=list');
+    }
+
+    protected function setContext(string $action): void
+    {
+        global $context, $scripturl, $txt;
+
+        $context['sub_action'] = $action;
+        $context['sub_template'] = 'ar_show_' . $action;
+        $context['page_title'] = $txt['AR_admin_' . $action];
+        $context['post_url'] = $scripturl . '?' . self::URL .';save';
+        $context['settings_title'] = $context['page_title'];
+    }
+
+    protected function loadRequiredFiles(): void
+    {
+        global $sourcedir;
+
+        isAllowedTo('admin_forum');
+
+        loadLanguage('AutoRespond');
+        loadtemplate('AutoRespond');
+
+        require_once($sourcedir . '/ManageSettings.php');
+        require_once($sourcedir . '/ManageServer.php');
     }
 }

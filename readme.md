@@ -1,14 +1,14 @@
 **Auto Respond**, https://missallsunday.com
 
-The software is licensed under [MPL 2.0 license](https://www.mozilla.org/MPL/).
+The software is licensed under [MIT License](https://opensource.org/license/mit/).
 
 ###### Description:
 
 This mod allow you to set a custom automatic reply when a new topic is created in a board you specify.
 
-- Set the user ID per message
-- Set if his/her post count will increase.
-- You can create as many custom messages as needed
+- Set the user ID per message.
+- Set if the user post count will increase.
+- You can create as many custom messages as needed.
 
 ###### Requirements
 
@@ -18,12 +18,17 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 
 ###### Languages:
 
-- English/utf8
+- English
 
 
 ###### Changelog:
 
 ```
+2.1 February 2024
+- Change license to MIT
+- Update to be hooks only
+- Refactor backend logic
+
 2.0.2 May 2017
 - Change license to Mozilla 2.0
 - Remove deprecated constructor

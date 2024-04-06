@@ -5,7 +5,7 @@
  *
  * @package AutoRespond
  * @version 2.1
- * @author Jessica González <suki@missallsunday.com>
+ * @author Michel Mendiola <suki@missallsunday.com>
  * @copyright Copyright (c) 2024  Michel Mendiola
  * @license https://opensource.org/license/mit/
  */
@@ -27,7 +27,7 @@ if (!empty($context['uninstalling'])) {
 }
 
 $table = [
-    'table_name' => 'autorespond',
+    'table_name' => '{db_prefix}autorespond',
     'columns' => [
         [
             'name' => 'id',

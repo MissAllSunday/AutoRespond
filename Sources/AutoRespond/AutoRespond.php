@@ -1,101 +1,136 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /**
- * Auto respond mod (SMF)
- *
- * @package AutoRespond
- * @version 2.1
- * @author Michel Mendiola <suki@missallsunday.com>
- * @copyright Copyright (c) 2024  Michel Mendiola
- * @license https://opensource.org/license/mit/
- */
+* Auto respond mod (SMF)
+*
+* @package AutoRespond
+* @version 2.1
+* @author Michel Mendiola <suki@missallsunday.com>
+* @copyright Copyright (c) 2024  Michel Mendiola
+* @license https://opensource.org/license/mit/
+*/
 
 namespace AutoRespond;
 
-use AutoRespond\AutoRespondService;
-
 class AutoRespond
 {
-	private AutoRespondService $service;
+    private AutoRespondService $service;
+    private static int $alreadyCreatedTopicId = 0;
+    private string $msgOptionsSubject = '';
+    private string $posterOptionsName = '';
 
-	public function __construct()
-	{
-		global $sourcedir;
+    public function __construct()
+    {
+        global $sourcedir;
 
-		loadLanguage('AutoRespond');
-		loadtemplate('AutoRespond');
+        // No DI :(
+        require_once($sourcedir . '/AutoRespond/AutoRespondService.php');
 
-		require_once($sourcedir . '/Subs-Post.php');
+        $this->service = new AutoRespondService();
+    }
+    public function handleRespond(array $msgOptions, array $topicOptions, array $posterOptions): void
+    {
+        if (!$this->service->isModEnable() || $this->isRecursive($topicOptions['id'])) {
+            return;
+        }
 
-		// No DI :(
-		$this->service = new AutoRespondService();
-	}
+        $this->msgOptionsSubject = $msgOptions['subject'];
+        $this->posterOptionsName = $posterOptions['name'];
 
-	public function createRespond()
-	{
-		global $topicOptions, $msgOptions, $posterOptions, $modSettings, $context;
+        $data = $this->service->getEntriesByBoard($topicOptions['board']);
 
-		if (empty($modSettings['AR_enable']))
-			return;
+        foreach ($data['entries'] as $entry)  {
+            $this->createResponse($entry, (int) $topicOptions['id']);
+        }
+    }
 
-		$entry = $this->service->getEntriesByBoard($topicOptions['board']);
+    public function createResponse(AutoRespondEntity $entry, int $topic): void
+    {
+        global $sourcedir, $modSettings;
 
-		if (empty($entry))
-			return;
+        require_once($sourcedir . '/Subs-Post.php');
 
-		$context['AR_message'] = $entry;
+        $newMsgOptions = [
+            'id' => 0,
+            'subject' => $this->setSubject($entry),
+            'body' => $this->setBody($entry),
+            'icon' => 'xx',
+            'smileys_enabled' => 1,
+            'attachments' => [],
+        ];
 
-		$context['AR_message']['body'] = un_preparsecode($entry['body']);
+        $newTopicOptions = [
+            'id' => $topic,
+            'board' => $entry->getBoardId(),
+            'poll' => null,
+            'lock_mode' => !empty($modSettings['AR_lock_topic_after']) ? 1 : null,
+            'sticky_mode' => null,
+            'mark_as_read' => false,
+        ];
 
+        $newPosterOptions = array(
+            'id' => $this->getPosterId($entry),
+            'name' => '',
+            'email' => '',
+            'update_post_count' => !empty($modSettings['AR_update_post_count']) ? 1 : 0,
+            'ip' => $this->getPosterIp(),
+        );
 
-		$replacements = [
-			'TOPIC_POSTER' => $posterOptions['name'],
-			'POSTED_TIME' => date("F j, Y, g:i a"),
-			'TOPIC_SUBJECT' => $msgOptions['subject'],
-		];
+        createPost($newMsgOptions, $newTopicOptions, $newPosterOptions);
 
+        self::$alreadyCreatedTopicId = $topic;
+    }
 
-		$find = [];
-		$replace = [];
+    protected function setSubject(AutoRespondEntity $entry): string
+    {
+        return empty($entry->getTitle()) ? $this->msgOptionsSubject : $entry->getTitle();
+    }
 
-		foreach ($replacements as $f => $r) {
-			$find[] = '{' . $f . '}';
-			$replace[] = $r;
-		}
+    protected function setBody(AutoRespondEntity $entry): string
+    {
+        return un_preparsecode($this->parseMessage($entry->getBody()));
+    }
 
-		/* Do the variable replacements. */
-		$context['AR_message']['body'] = str_replace($find, $replace, $context['AR_message']['body']);
+    protected function getPosterId(AutoRespondEntity $entry): int
+    {
+        $userID = $entry->getUserId();
 
-		$newMsgOptions = [
-			'id' => 0,
-			'subject' => !empty($modSettings['AR_use_title']) ? $context['AR_message']['title'] : $msgOptions['subject'],
-			'body' => $context['AR_message']['body'],
-			'icon' => 'xx',
-			'smileys_enabled' => 1,
-			'attachments' => [],
-		];
+        return $userID ?: AutoRespondService::DEFAULT_POSTER_ID;
+    }
 
-		$newTopicOptions = [
-			'id' => $topicOptions['id'],
-			'board' => $topicOptions['board'],
-			'poll' => null,
-			'lock_mode' => !empty($modSettings['AR_lock_topic_after']) ? 1 : null,
-			'sticky_mode' => null,
-			'mark_as_read' => false,
-		];
+    protected function getPosterIp(): string
+    {
+        global $modSettings;
 
-		$newPosterOptions = [
-			'id' => !empty($context['AR_message']['user_id']) ? $context['AR_message']['user_id'] : 1,
-			'name' => '',
-			'email' => '',
-			'update_post_count' => !empty($modSettings['AR_update_post_count']) ? 1 : 0,
-			'ip' => !empty($modSettings['AR_dummy_ip']) ? '127.0.0.1' : '',
-		];
+        return !empty($modSettings['AR_dummy_ip']) ? AutoRespondService::DEFAULT_POSTER_IP : '';
+    }
 
-		createPost($newMsgOptions, $newTopicOptions, $newPosterOptions);
-	}
+    protected function parseMessage(string $messageBody) : string
+    {
+        $replacements = [
+            'TOPIC_POSTER' => $this->posterOptionsName,
+            'POSTED_TIME' => date("F j, Y, g:i a"),
+            'TOPIC_SUBJECT' => $this->msgOptionsSubject,
+        ];
+
+        /* Split the replacements up into two arrays, for use with str_replace */
+        $find = [];
+        $replace = [];
+
+        foreach ($replacements as $f => $r)
+        {
+            $find[] = '{' . $f . '}';
+            $replace[] = $r;
+        }
+
+        /* Do the variable replacements. */
+        return str_replace($find, $replace, $messageBody);
+    }
+
+    protected function isRecursive(int $topicId): bool
+    {
+        return self::$alreadyCreatedTopicId === $topicId;
+    }
 }
-
-//Oh, wouldn't it be great if I *was* crazy? Then the world would be okay.
