@@ -4,83 +4,72 @@
  * Auto respond mod (SMF)
  *
  * @package AutoRespond
- * @version 2.0.2
- * @author Jessica González <suki@missallsunday.com>
- * @copyright Copyright (c) 2017 Jessica González
- * @license http://www.mozilla.org/MPL/ MPL 2.0
+ * @version 2.1
+ * @author Michel Mendiola <suki@missallsunday.com>
+ * @copyright Copyright (c) 2024  Michel Mendiola
+ * @license https://opensource.org/license/mit/
  */
 
-
-/* This works for both adding and editing, yeah, I'm lazy... */
 function template_auto_respond_add()
 {
-	global $context, $scripturl, $txt;
+	global $context, $txt;
 
-	$sa = isset($_REQUEST['sa']) ? $_REQUEST['sa'] : 'add';
-
-	/* The nice form, actually this is just an ugly table */
 	echo '
-	<form action="', $scripturl, '?action=admin;area=autorespond;sa=',$sa,'2','" method="post" target="_self" id="postmodify" class="flow_hidden" onsubmit="submitonce(this);smc_saveEntities(\'postmodify\', [\'title\', \'body\']);" >
-		<div class="cat_bar">
-			<h3 class="catbg">',$txt['AR_admin_'.$sa],'</h3>
-		</div>
-		<div class="windowbg2">
-			<span class="topslice"><span></span></span>
-			<div class="content">
-				<dl class="settings">';
+<form action="', $context['autorespond']['url'] ,'" method="post" target="_self">
+    <div class="cat_bar">
+        <h3 class="catbg">', $context['page_title'], '</h3>
+    </div>
+    <div class="windowbg2">
+        <div class="content">
+            <dl class="settings">
+                <dt>
+                    ',$txt['AR_form_title'],'
+                </dt>
+                <dd>
+                    <input 
+                        type="text" name="title" size="150" tabindex="1" maxlength="255" 
+                        value="', $context['autorespond']['data']['title'] ,'" class="input_text" />
+                </dd>
+                <dt>
+                    ',$txt['AR_form_user'],'
+                </dt>
+                <dd>
+                    <input 
+                        type="text" name="user_id" size="5" tabindex="1" maxlength="255" 
+                        value="',$context['autorespond']['data']['user_id'],'" class="input_text" />
+                </dd>
+                <dt>
+                    ',$txt['AR_form_boards'],'
+                </dt>
+                <dd>';
 
-	/* Title */
+	foreach($context['autorespond']['data']['boards'] as $board)
+    {
+        echo '
+                    <label for="',$board['id_board'],'">
+                        <input 
+                            id="',$board['id_board'],'" name="board_id[]" value="',$board['id_board'],'"  type="checkbox"
+                             ',(in_array($board['id_board'], $context['autorespond']['data']['board_id']) ? 'checked="yes"' : ''),' />
+                             ',$board['name'],' ID (',$board['id_board'],')
+                    </label>';
+    }
+
 	echo'
-					<dt>
-						',$txt['AR_form_title'],'
-					</dt>
-					<dd>
-						<input type="text" name="title" size="55" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['title'],'" class="input_text" />
-					</dd>';
-
-	/* User */
-	echo'
-					<dt>
-						',$txt['AR_form_user'],'
-					</dt>
-					<dd>
-						<input type="text" name="user_id" size="5" tabindex="1" maxlength="255" value="',$context['autorespond'][$sa]['user_id'],'" class="input_text" />
-					</dd>';
-
-	/* Boards */
-	echo'
-					<dt>
-						',$txt['AR_form_boards'],'
-					</dt>
-					<dd>';
-
-	foreach($context['autorespond']['boards'] as $b)
-		echo '
-						<label for="',$b['id_board'],'"><input id="',$b['id_board'],'" name="board_id[]" value="',$b['id_board'],'" type="checkbox" ',(in_array($b['id_board'],$context['autorespond'][$sa]['board_id']) ? 'checked=yes' : ''),' />',$b['name'],' ID (',$b['id_board'],')</label><br />';
-
-	echo'
-					</dd>';
-
-	/* Textarea */
-	echo'
+                </dd>
 					<dt>
 						',$txt['AR_form_body'],'
 						<small>',$txt['AR_form_body_decs'],'</small>
 					</dt>
 					<dd>
-						<textarea rows="15" cols="50" name="body" id="body">',$context['autorespond'][$sa]['body'],'</textarea>
+						', template_control_richedit($context['post_box_name'], 'smileyBox_message') ,'
 					</dd>
-				</dl>';
-
-		/* Done with the fields, lets show a submit button */
-		echo '
-				<hr class="hrcolor clear" />
+				</dl>
 				<div id="confirm_buttons" class="righttext">
-					<input type="hidden" id="', $context['session_var'], '" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-					<input type="hidden" id="arid" name="arid" value="',$context['autorespond'][$sa]['id'],'" />
-					<input type="submit" name="send" class="sbtn" value="',$txt['AR_form_send_'.$sa],'" />
+                    <span id="post_confirm_buttons">
+                        ', template_control_richedit_buttons($context['post_box_name']), '
+                    </span>
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 				</div>
-				<span class="botslice"><span></span></span>
 			</div>
 		</div>
 	</form>';

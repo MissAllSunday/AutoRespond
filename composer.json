@@ -1,0 +1,18 @@
+{
+    "name": "suki/auto-respond",
+    "description": "SMF modification for creating automatic responses",
+    "type": "smf-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michel Mendiola",
+            "email": "suki@missallsunday.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AutoRespond\\": "Sources/AutoRespond/"
+        }
+    },
+    "minimum-stability": "dev"
+}
