@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
-* Auto respond mod (SMF)
-*
-* @package AutoRespond
-* @version 2.1
-* @author Michel Mendiola <suki@missallsunday.com>
-* @copyright Copyright (c) 2024  Michel Mendiola
-* @license https://opensource.org/license/mit/
-*/
+ * Auto respond mod (SMF)
+ *
+ * @package AutoRespond
+ * @version 2.1
+ * @author Michel Mendiola <suki@missallsunday.com>
+ * @copyright Copyright (c) 2024  Michel Mendiola
+ * @license https://opensource.org/license/mit/
+ */
 
 namespace AutoRespond;
 
