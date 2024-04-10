@@ -49,5 +49,6 @@
 		<remove-dir name="$sourcedir/AutoRespond" />
 		<remove-file name="$themedir/AutoRespond.template.php" />
 		<remove-file name="$languagedir/AutoRespond.english.php" />
+		<remove-file name="$languagedir/AutoRespond.russian.php" />
 	</uninstall>
 </package-info>
