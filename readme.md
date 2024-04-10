@@ -24,7 +24,8 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 ###### Changelog:
 
 ```
-2.1 February 2024
+2.1 April 2024
+- Add Russian translation thanks to [Bugo](https://github.com/dragomano)
 - Change license to MIT
 - Update to be hooks only
 - Refactor backend logic
