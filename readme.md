@@ -10,6 +10,8 @@ This mod allow you to set a custom automatic reply when a new topic is created i
 - Set if the user post count will increase.
 - You can create as many custom messages as needed.
 
+Version compatible with SMF 2.0 is available at https://github.com/MissAllSunday/AutoRespond/releases/tag/v2.0.2
+
 ###### Requirements
 
 - SMF 2.1.x.
