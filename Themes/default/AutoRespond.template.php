@@ -107,7 +107,7 @@ function template_ar_show_list()
 		echo '
 		<table class="table_grid">
 			<thead>
-				<tr class="catbg">
+				<tr class="title_bar">
 					<th scope="col" class="first_th">'.$txt['AR_list_id'].'</th>
 					<th scope="col">'.$txt['AR_list_title'].'</th>
 					<th scope="col">'.$txt['AR_list_board'].'</th>
