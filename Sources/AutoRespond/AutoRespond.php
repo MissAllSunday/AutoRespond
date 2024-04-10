@@ -21,14 +21,14 @@ class AutoRespond
     private string $msgOptionsSubject = '';
     private string $posterOptionsName = '';
 
-    public function __construct()
+    public function __construct(?AutoRespondService $autoRespondService = null)
     {
         global $sourcedir;
 
         // No DI :(
         require_once($sourcedir . '/AutoRespond/AutoRespondService.php');
 
-        $this->service = new AutoRespondService();
+        $this->service = $autoRespondService ?? new AutoRespondService();
     }
     public function handleRespond(array $msgOptions, array $topicOptions, array $posterOptions): void
     {

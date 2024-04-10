@@ -14,31 +14,29 @@ declare(strict_types=1);
 
 namespace AutoRespond;
 
-use AutoRespond\AutoRespondService as AutoRespondService;
-
 class AutoRespondAdmin
 {
-    const ACTIONS = [
+    public const ACTIONS = [
         'settings',
         'list',
         'add',
         'delete',
     ];
-    const URL = 'action=admin;area=autorespond';
-    const NOT_EMPTY_VALUES = [
+    public const URL = 'action=admin;area=autorespond';
+    public const NOT_EMPTY_VALUES = [
         'body',
         'board_id'
     ];
     private AutoRespondService $service;
 
-    public function __construct()
+    public function __construct(?AutoRespondService $autoRespondService = null)
     {
         global $sourcedir;
 
         // No DI :(
         require_once($sourcedir . '/AutoRespond/AutoRespondService.php');
 
-        $this->service = new AutoRespondService();
+        $this->service = $autoRespondService ?? new AutoRespondService();
     }
 
     public function menu(&$admin_areas): void
@@ -71,7 +69,7 @@ class AutoRespondAdmin
             ],
         ];
 
-        $action = isset($_REQUEST['sa']) && array_search($_REQUEST['sa'], self::ACTIONS) ?
+        $action = isset($_REQUEST['sa']) && in_array($_REQUEST['sa'], self::ACTIONS, true) ?
             $this->service->sanitize($_REQUEST['sa']) : self::ACTIONS[0];
 
         $this->setContext($action);
@@ -101,7 +99,7 @@ class AutoRespondAdmin
         prepareDBSettingContext($config_vars);
     }
 
-    function list(): void
+    public function list(): void
     {
         global $context;
 

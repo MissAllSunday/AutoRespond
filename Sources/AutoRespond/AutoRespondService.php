@@ -16,10 +16,10 @@ namespace AutoRespond;
 
 class AutoRespondService
 {
-    const TABLE = 'autorespond';
+    public const TABLE = 'autorespond';
 
-    const DEFAULT_POSTER_ID = 1;
-    const DEFAULT_POSTER_IP = '127.0.0.1';
+    public const DEFAULT_POSTER_ID = 1;
+    public const DEFAULT_POSTER_IP = '127.0.0.1';
 
     public function __construct()
     {
@@ -121,7 +121,7 @@ class AutoRespondService
             ]
         );
 
-        list ($data) = $smcFunc['db_fetch_all']($request);
+        [$data] = $smcFunc['db_fetch_all']($request);
         $smcFunc['db_free_result']($request);
 
         $entry->setEntry($data);
@@ -158,7 +158,7 @@ class AutoRespondService
         return $boards;
     }
 
-    public function sanitize(mixed $variable): mixed
+    public function sanitize($variable)
     {
         global $smcFunc;
 
