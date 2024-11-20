@@ -23,8 +23,6 @@ Version compatible with SMF 2.0 is available at https://github.com/MissAllSunday
 - English
 - Russian
 
-
-
 ###### Changelog:
 
 ```
