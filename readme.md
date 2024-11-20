@@ -21,11 +21,18 @@ Version compatible with SMF 2.0 is available at https://github.com/MissAllSunday
 ###### Languages:
 
 - English
+- Russian
+
 
 
 ###### Changelog:
 
 ```
+2.1.1 Nov 2024
+- Fix typed parameters
+- Prevent creating a response on redirecting topics
+- Fix licensing mixup
+
 2.1 April 2024
 - Add Russian translation thanks to [Bugo](https://github.com/dragomano)
 - Change license to MIT

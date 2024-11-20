@@ -6,10 +6,10 @@ declare(strict_types=1);
  * Auto respond mod (SMF)
  *
  * @package AutoRespond
- * @version 2.1
+ * @version 2.1.1
  * @author Michel Mendiola <suki@missallsunday.com>
  * @copyright Copyright (c) 2024  Michel Mendiola
- * @license https://opensource.org/license/mit/
+ * @license https://www.mozilla.org/en-US/MPL/2.0/
  */
 
 namespace AutoRespond;
@@ -32,25 +32,31 @@ class AutoRespond
     }
     public function handleRespond(array $msgOptions, array $topicOptions, array $posterOptions): void
     {
-        if (!$this->service->isModEnable() || $this->isRecursive($topicOptions['id'])) {
+        global $sourcedir;
+
+        $topicId = (int) $topicOptions['id'];
+
+        if (!$this->service->isModEnable() ||
+            $this->isRecursive($topicId) ||
+            !empty($topicOptions['redirect_topic'])) {
             return;
         }
 
         $this->msgOptionsSubject = $msgOptions['subject'];
         $this->posterOptionsName = $posterOptions['name'];
 
-        $data = $this->service->getEntriesByBoard($topicOptions['board']);
+        $data = $this->service->getEntriesByBoard((int) $topicOptions['board']);
+
+        require_once($sourcedir . '/Subs-Post.php');
 
         foreach ($data['entries'] as $entry)  {
-            $this->createResponse($entry, (int) $topicOptions['id']);
+            $this->createResponse($entry, $topicId);
         }
     }
 
     public function createResponse(AutoRespondEntity $entry, int $topic): void
     {
-        global $sourcedir, $modSettings;
-
-        require_once($sourcedir . '/Subs-Post.php');
+        global $modSettings;
 
         $newMsgOptions = [
             'id' => 0,

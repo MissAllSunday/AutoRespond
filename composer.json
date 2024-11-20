@@ -2,7 +2,7 @@
   "name": "suki/auto-respond",
   "description": "SMF modification for creating automatic responses",
   "type": "smf-module",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "authors": [
     {
       "name": "Michel Mendiola",
