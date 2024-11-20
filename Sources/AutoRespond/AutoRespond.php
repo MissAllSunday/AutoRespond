@@ -69,7 +69,7 @@ class AutoRespond
 
         $newTopicOptions = [
             'id' => $topic,
-            'board' => $entry->getBoardId(),
+            'board' => implode(',', $entry->getBoardId()),
             'poll' => null,
             'lock_mode' => !empty($modSettings['AR_lock_topic_after']) ? 1 : null,
             'sticky_mode' => null,

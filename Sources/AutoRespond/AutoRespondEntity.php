@@ -20,7 +20,7 @@ class AutoRespondEntity
     public string $title = '';
     public int $user_id = 1;
     public int $id = 0;
-    public int $board_id = 0;
+    public string $board_id = '';
 
     public function __construct(array $entry = [])
     {
@@ -29,20 +29,20 @@ class AutoRespondEntity
 
     public function setEntry(array $entry): void
     {
-        foreach ($entry as $key => $value) {
+        foreach ($this->castValues($entry) as $key => $value) {
             $setCall = 'set' . $this->snakeToCamel($key);
             $this->{$setCall}($value);
         }
     }
 
-    public function getBoardId(): int
+    public function getBoardId(): array
     {
-        return $this->board_id;
+        return explode(',', $this->board_id);
     }
 
-    public function setBoardId(int $boardId): void
+    public function setBoardId( $boardId): void
     {
-        $this->board_id = $boardId;
+        $this->board_id = is_array($boardId) ? implode(',', $boardId) : (string) $boardId;
     }
 
     public function getBody(): string
@@ -88,5 +88,12 @@ class AutoRespondEntity
     private function snakeToCamel($input): string
     {
         return \lcfirst(\str_replace('_', '', \ucwords($input, '_')));
+    }
+
+    private function castValues(array $data) : array
+    {
+        return array_map(function ($column) {
+            return ctype_digit($column) ? ((int) $column) : $column;
+        }, $data);
     }
 }

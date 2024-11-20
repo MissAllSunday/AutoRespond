@@ -64,7 +64,7 @@ function template_ar_show_add()
         echo '
                 <label for="'. $board['id'] .'">
                     <input id="'. $board['id'] .'" name="board_id[]" value="'. $board['id'] .'" type="checkbox"
-                     '. ($board['id'] == $context['data']['entry']->getBoardId() ? 'checked=yes' : '') .' />
+                     '. (in_array($board['id'], $context['data']['entry']->getBoardId()) ? 'checked=yes' : '') .' />
                      '. $board['name'].' ID ('. $board['id'].')
                 </label>';
 
@@ -129,7 +129,7 @@ function template_ar_show_list()
 						'. $entry->getTitle() .'
 						</td>
 						<td>
-						'. $entry->getBoardId() .'
+						'. implode(', ', $entry->getBoardId()) .'
 						</td>
 						<td class="windowbg2">
 						'. $context['data']['users'][$entry->getUserId()]['link_color'] .'

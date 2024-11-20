@@ -1,7 +1,5 @@
 **Auto Respond**, https://missallsunday.com
 
-The software is licensed under [MIT License](https://opensource.org/license/mit/).
-
 ###### Description:
 
 This mod allow you to set a custom automatic reply when a new topic is created in a board you specify.

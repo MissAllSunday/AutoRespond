@@ -191,8 +191,8 @@ class AutoRespondService
 
         foreach ($smcFunc['db_fetch_all']($request) as $row)
         {
-            $data['entries'][$row['id']] = new AutoRespondEntity($row);
-            $data['users'][] = $row['user_id'];
+            $data['entries'][(int) $row['id']] = new AutoRespondEntity($row);
+            $data['users'][] = (int) $row['user_id'];
         }
         $smcFunc['db_free_result']($request);
 
